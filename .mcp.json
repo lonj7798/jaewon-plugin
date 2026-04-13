@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "jaewon": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-server/server.js"],
+      "env": {
+        "JAEWON_PLUGIN_ROOT": "${CLAUDE_PLUGIN_ROOT}"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "jaewon-plugin",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Personal Claude Code plugin",
+  "main": "mcp-server/server.js",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  }
+}

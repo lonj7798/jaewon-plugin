@@ -1,0 +1,14 @@
+{
+  "name": "jaewon-plugin",
+  "version": "0.1.0",
+  "description": "Personal Claude Code plugin — self-driving pipeline, TDD-first workflow, LOD-compliant planning",
+  "author": {
+    "name": "Jaewon"
+  },
+  "license": "MIT",
+  "keywords": ["claude-code", "plugin", "pipeline", "tdd", "lod"],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json"
+}
