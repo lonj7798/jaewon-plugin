@@ -10,7 +10,7 @@
  *   Optionally disables logging per settings.
  *   Side effects: Reads/writes filesystem
  */
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, appendFileSync } from 'fs';
 import { join } from 'path';
 import { readStdin } from './lib/stdin.mjs';
 import { getSettings } from './lib/settings.mjs';
@@ -66,6 +66,15 @@ async function main() {
     pendingTasks,
     blocked: status.blocked || []
   });
+
+  // Append to wiki log if it exists
+  const wikiLogPath = join(projectDir, 'docs', 'wiki', 'log.md');
+  if (existsSync(wikiLogPath)) {
+    const logEntry = `\n## [${now.split('T')[0]}] Session #${sessionNum}\nTasks done: ${counts.done}/${counts.total} | Branch: ${branch || 'unknown'} | Plan: ${status.plan?.current_version || 'none'}\n`;
+    try {
+      appendFileSync(wikiLogPath, logEntry, 'utf-8');
+    } catch { /* ignore */ }
+  }
 
   // Auto-disable logging if configured
   if (settings.logging?.auto_disable_on_session_end) {

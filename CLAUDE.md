@@ -8,6 +8,10 @@ Personal Claude Code plugin providing a self-driving pipeline, TDD-first workflo
 - **Coding enhancer**: TDD-first agent chain (test-generator -> implementer -> reviewer)
 - **Workflow automation**: self-driving pipeline that dispatches idle teammates and guards premature stops
 
+## Project Wiki
+
+Project knowledge base lives at `docs/wiki/`. Read it for context about modules, decisions, and project evolution. Do not write to it directly — the `wiki-maintainer` agent handles all updates automatically via hooks. See `docs/wiki/SCHEMA.md` for conventions.
+
 ## Self-Driving Pipeline
 
 Three hooks form the core loop:

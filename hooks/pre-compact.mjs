@@ -50,10 +50,19 @@ async function main() {
 
   const counts = checklist ? countByStatus(checklist) : { done: 0, total: 0 };
 
+  // Wiki lint hint: full sync before compaction
+  let wikiHint = '';
+  const { existsSync: fsExists } = await import('fs');
+  const { join: pathJoin } = await import('path');
+  const schemaPath = pathJoin(projectDir, 'docs', 'wiki', 'SCHEMA.md');
+  if (fsExists(schemaPath)) {
+    wikiHint = ' Wiki: PreCompact — consider spawning wiki-maintainer for full lint + index rebuild before context loss.';
+  }
+
   console.log(JSON.stringify({
     hookSpecificOutput: {
       hookEventName: 'PreCompact',
-      additionalContext: `Handoff written before compaction. ${counts.done}/${counts.total} tasks done.`
+      additionalContext: `Handoff written before compaction. ${counts.done}/${counts.total} tasks done.${wikiHint}`
     }
   }));
 }

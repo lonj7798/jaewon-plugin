@@ -84,6 +84,11 @@ async function main() {
     modified = true;
 
     context.push('Git commit tracked.');
+
+    // Wiki hint: commit detected
+    const commitOutput = data.tool_response?.stdout || data.tool_result?.stdout || '';
+    const filesChanged = commitOutput.match(/\d+ files? changed/)?.[0] || '';
+    context.push(`Wiki: commit detected${filesChanged ? ` (${filesChanged})` : ''}. Consider spawning wiki-maintainer for file-level page updates.`);
   }
 
   if (modified) {

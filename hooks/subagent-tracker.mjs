@@ -88,11 +88,15 @@ async function main() {
   const newlyUnblocked = findNewlyUnblocked(updated, taskId);
   const unblockedList = newlyUnblocked.map(t => `${t.id} (${t.name})`).join(', ');
 
+  // Wiki hint: task completed
+  const wikiHint = `Wiki: task ${taskId} (${data.agent_type || 'agent'}) completed. Consider spawning wiki-maintainer for concept-level page updates.`;
+
   const context = [
     `Task ${taskId} ${status}.`,
     newlyUnblocked.length > 0
       ? `Newly unblocked: ${unblockedList}.`
-      : 'No new tasks unblocked.'
+      : 'No new tasks unblocked.',
+    wikiHint
   ].join(' ');
 
   console.log(JSON.stringify({

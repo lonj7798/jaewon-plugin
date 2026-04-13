@@ -71,6 +71,12 @@ async function main() {
     }
   }
 
+  // Create docs/wiki/ if missing
+  const wikiDir = join(projectDir, 'docs', 'wiki', 'pages');
+  if (!existsSync(wikiDir)) {
+    mkdirSync(wikiDir, { recursive: true });
+  }
+
   // --- Phase 5: Extended session management ---
 
   const status = readStatus(settings, projectDir);
@@ -107,7 +113,24 @@ async function main() {
     }
   }
 
-  // 3. Compute and inject HUD
+  // 3. Wiki staleness check
+  const wikiLogPath = join(projectDir, 'docs', 'wiki', 'log.md');
+  if (existsSync(wikiLogPath)) {
+    try {
+      const logContent = readFileSync(wikiLogPath, 'utf-8');
+      const sessionMatches = logContent.match(/Session #(\d+)/g);
+      if (sessionMatches && sessionMatches.length > 0) {
+        const lastLoggedSession = parseInt(sessionMatches[sessionMatches.length - 1].match(/\d+/)[0]);
+        const currentSession = status.session.total_sessions || 1;
+        if (currentSession - lastLoggedSession >= 3) {
+          contextParts.push('');
+          contextParts.push('WIKI STALE: No wiki updates in 3+ sessions. Consider spawning wiki-maintainer for a full sync.');
+        }
+      }
+    } catch { /* ignore */ }
+  }
+
+  // 4. Compute and inject HUD
   try {
     const hud = computeHUD(settings, projectDir);
     const hudLine = formatCompactHUD(hud);
