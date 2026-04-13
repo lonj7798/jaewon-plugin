@@ -24,7 +24,7 @@ description: |
     <assistant>I will analyze the payment module, identify its responsibilities, and create a phased decomposition plan that breaks it into LOD-compliant files (each under 800 LOC, single responsibility). Each phase will include TDD steps to ensure no regressions during the split.</assistant>
     <commentary>Trigger for refactoring requests that need careful decomposition. The planner identifies LOD violations and creates a safe migration path with test coverage at each step.</commentary>
   </example>
-model: claude-opus-4-6
+model: opus
 color: blue
 tools:
   - Read

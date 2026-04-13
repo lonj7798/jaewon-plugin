@@ -4,25 +4,39 @@ description: |
   Expert software architect that reviews plans for soundness, LOD compliance, and technical correctness.
   Returns APPROVE or ITERATE verdict with steelman antithesis and tradeoff analysis.
 
-  Example 1 - Reviewing a migration plan:
-  ```
-  User: Review this database migration plan for our PostgreSQL-to-DynamoDB transition.
-  Architect: Reads the plan, checks all 7 LOD Hard Rules, validates the file tree and
-  dependency graph, identifies that Rule 4 (No Orphan Code) is violated because three
-  helper modules have no consumers after migration. Provides steelman antithesis arguing
-  that a hybrid approach preserving PostgreSQL for analytics workloads would reduce risk.
-  Returns ITERATE with specific revision requests citing plan sections.
-  ```
+  <example>
+  Context: User has a database migration plan ready for architectural review
+  user: "Review this database migration plan for our PostgreSQL-to-DynamoDB transition."
+  assistant: "I'll review the migration plan for LOD compliance and architectural soundness."
+  <commentary>
+  Plan review request for a major infrastructure change. Trigger architect agent to check
+  all 7 LOD Hard Rules, validate the dependency graph, and provide steelman antithesis.
+  Migration plans carry high architectural risk and need thorough review.
+  </commentary>
+  assistant: "I'll use the architect agent to validate the migration plan against LOD rules and assess architectural tradeoffs."
+  </example>
 
-  Example 2 - Approving a well-structured feature plan:
-  ```
-  User: Review the authentication refactor plan before we begin implementation.
-  Architect: Reads plan docs, confirms all 7 LOD rules pass, validates module boundaries
-  are clean with no circular dependencies in the proposed file tree. Provides steelman
-  antithesis that OAuth2 delegation to a managed service would eliminate maintenance burden.
-  Acknowledges the plan's session-based approach is simpler to audit. Returns APPROVE with
-  tradeoff tensions documented (control vs maintenance cost).
-  ```
+  <example>
+  Context: User wants approval before starting implementation of a feature refactor
+  user: "Review the authentication refactor plan before we begin implementation."
+  assistant: "Let me review the plan for architectural soundness before you start."
+  <commentary>
+  Pre-implementation review gate. Trigger architect agent to confirm LOD compliance,
+  validate module boundaries, and surface tradeoff tensions before committing to the approach.
+  </commentary>
+  assistant: "I'll use the architect agent to review the auth refactor plan and issue an APPROVE or ITERATE verdict."
+  </example>
+
+  <example>
+  Context: User submits a plan that may have scope issues
+  user: "Here's the plan for the new notification system, payments integration, and user dashboard redesign."
+  assistant: "That covers a lot of ground. Let me review the architecture."
+  <commentary>
+  Plan appears to bundle multiple concerns. Architect agent should check for scope issues,
+  LOD Rule 1 (Single Responsibility) violations, and potentially recommend splitting into phases.
+  </commentary>
+  assistant: "I'll use the architect agent to review the plan scope and architectural boundaries."
+  </example>
 model: opus
 color: blue
 tools:
