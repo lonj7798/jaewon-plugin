@@ -71,7 +71,7 @@ Planner (creates/revises) -> Architect (reviews) -> Critic (validates)
 ```
 
 ### 3a: Planner Agent
-Spawn via `Task(subagent_type="oh-my-claudecode:planner", model="opus")`.
+Spawn via `Task(subagent_type="jaewon-plugin:planner", model="opus")`.
 
 **Input**: Interview spec, codebase context, revision notes (if looping).
 
@@ -80,7 +80,7 @@ Spawn via `Task(subagent_type="oh-my-claudecode:planner", model="opus")`.
 - **Phase 1-N -- TDD Phases**: Each with RED (failing tests), GREEN (minimal passing code), REFACTOR (cleanup while green). Ordered by dependency.
 
 ### 3b: Architect Agent
-Spawn via `Task(subagent_type="oh-my-claudecode:architect", model="opus")`. Read-only.
+Spawn via `Task(subagent_type="jaewon-plugin:architect", model="opus")`. Read-only.
 
 **Evaluates**: LOD compliance, architectural soundness, interface cleanliness, acyclic dependencies.
 
@@ -89,7 +89,7 @@ Spawn via `Task(subagent_type="oh-my-claudecode:architect", model="opus")`. Read
 **Returns**: APPROVE (proceed to Critic) or ITERATE (back to Planner with revision requests).
 
 ### 3c: Critic Agent
-Spawn via `Task(subagent_type="oh-my-claudecode:critic", model="opus")`. Read-only. Runs only after Architect approves.
+Spawn via `Task(subagent_type="jaewon-plugin:critic", model="opus")`. Read-only. Runs only after Architect approves.
 
 **Evaluates**: principle consistency, fair alternatives, testable criteria, risk coverage.
 

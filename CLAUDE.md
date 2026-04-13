@@ -15,7 +15,7 @@ Three hooks form the core loop:
 | Hook | Script | Purpose |
 |------|--------|---------|
 | `Stop` | `stop-guard.mjs` | Blocks exit if work is unverified; prompts next step |
-| `SubagentStop` | `subagent-tracker.mjs` | Logs subagent results; updates `.jaewon/state.json` |
+| `SubagentStop` | `subagent-tracker.mjs` | Logs subagent results; updates checklist.json |
 | `TeammateIdle` | `teammate-dispatcher.mjs` | Assigns queued tasks to idle teammates |
 
 ## Per-Project State
@@ -24,10 +24,17 @@ All runtime data lives in `.jaewon/` at project root:
 
 ```
 .jaewon/
-  state.json       # current phase, task list, agent assignments
-  session.log      # session history
-  checklist.md     # active checklist (read by jaewon_checklist_read)
-  insights.md      # accumulated learnings
+  settings.json    # configurable paths + preferences
+  status.json      # current phase, task list, agent assignments
+  session-log.md   # session history
+  context/         # handoff.md for zero-ramp-up sessions
+  blocked/         # failed task reports
+  debug-history/   # bug knowledge base
+  logs/            # debug logs
+  notes/           # project decisions
+  metrics/         # test coverage, code health
+  architecture/    # file tree + dependencies
+  preferences/     # coding style conventions
 ```
 
 ## Skills
@@ -60,13 +67,16 @@ All runtime data lives in `.jaewon/` at project root:
 
 | Tool | Description |
 |------|-------------|
-| `jaewon_status` | Current phase, active tasks, blockers |
-| `jaewon_checklist_read` | Read `.jaewon/checklist.md` |
-| `jaewon_checklist_update` | Mark checklist items done/in-progress |
-| `jaewon_state_read` | Read raw `.jaewon/state.json` |
-| `jaewon_state_write` | Update state fields |
-| `jaewon_insights_append` | Append a learning to `.jaewon/insights.md` |
-| `jaewon_session_log` | Append entry to `.jaewon/session.log` |
+| `jaewon_status` | Read current `.jaewon/status.json` |
+| `jaewon_status_update` | Update specific status fields (deep merged) |
+| `jaewon_checklist_read` | Read plan checklist with task summary |
+| `jaewon_checklist_update` | Update task status in checklist |
+| `jaewon_task_status` | Get single task or summary counts |
+| `jaewon_logging_toggle` | Enable/disable per-module debug logging |
+| `jaewon_debug_history` | Search/add to bug knowledge base |
+| `jaewon_hud` | Get HUD display with pipeline status |
+| `jaewon_note_add` | Append note to `.jaewon/notes/` |
+| `jaewon_plan_save` | Save plan document to `docs/plans/` |
 
 ## LOD Hard Rules
 
