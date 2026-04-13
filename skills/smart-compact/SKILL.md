@@ -19,9 +19,12 @@ Read `.jaewon/status.json` and `checklist.json` to find pending tasks. Build a l
 3. "Continue current work" (preserve recent context as-is)
 4. Free text option for the user to describe their next focus
 
-### Step 2: Ask the User (MAX 1 question, 3 choices + free text)
+### Step 2: Clarify Focus (MAX 3 questions)
 
-Use `AskUserQuestion` with exactly **3 choices + free text**. Pick the top 2 most relevant pending tasks + "Continue current work". Never show more than 3 choices — keep it fast, context is filling up.
+Ask **up to 3 rounds** to clarify the user's next focus. Stop early if clear. Each round: one question with choices + free text.
+
+**Round 1: What's next?**
+Pick top 2-3 pending tasks from checklist + "Continue current work" + free text.
 
 ```
 What should I focus on after compaction?
@@ -32,18 +35,33 @@ What should I focus on after compaction?
 4. (free text) Other — type your focus
 ```
 
-If there are no checklist tasks:
+**Round 2 (if needed): Narrow scope**
+Based on their choice, ask what specifically matters:
 
 ```
-What should I preserve after compaction?
+For "API endpoints" — what context is most important?
 
-1. Code and decisions from this session
-2. Architecture context
-3. Continue current work
-4. (free text) Other
+1. The plan doc + checklist details
+2. Auth middleware decisions (dependency)
+3. Test patterns from previous tasks
+4. (free text) Something else
 ```
 
-**ONE question only.** Do not ask follow-ups. User picks, you write focus, you compact. Fast.
+**Round 3 (if needed): Anything to drop?**
+```
+Anything I can safely forget?
+
+1. Planning/interview discussion (already saved to docs/)
+2. Earlier debugging context
+3. Nothing — keep everything you can
+4. (free text) Drop this: ...
+```
+
+**Rules:**
+- Maximum 3 questions total — never more
+- Stop early if the focus is already clear after round 1 or 2
+- If user says "just compact" at any point, skip remaining questions
+- Keep questions short — context is filling up
 
 ### Step 3: Write Focus File
 
