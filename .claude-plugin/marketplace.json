@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "jaewon-plugin",
+  "description": "Personal Claude Code plugin — self-driving pipeline, TDD-first workflow, LOD-compliant planning",
+  "owner": {
+    "name": "Jaewon"
+  },
+  "plugins": [
+    {
+      "name": "jaewon-plugin",
+      "description": "Personal coding lifecycle manager with 9 agents, 7 skills, 10 hooks, and MCP tools. Self-driving execution pipeline with TDD-first workflow and LOD compliance.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Jaewon"
+      },
+      "source": "./",
+      "category": "productivity",
+      "tags": ["pipeline", "tdd", "lod", "agents", "personal"]
+    }
+  ],
+  "version": "0.1.0"
+}
