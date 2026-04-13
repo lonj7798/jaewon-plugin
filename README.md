@@ -23,7 +23,7 @@ claude --plugin-dir ./jaewon-plugin
 Persistent status bar at the bottom of your terminal:
 
 ```
-[GREEN] v0.2 | dev ● | 3/8 done 1 blocked | ctx:45%██████░░░░ | opus
+[GREEN] v0.2 | dev ● | 3/8 done | 5h:[■■■■□□□□]52%(2h31m) wk:[■□□□□□□□]10%(6d20h) | session:45m | ctx:[■■■■■□□□□□]47% | opus
 ```
 
 | Element | Source | What it shows |
@@ -31,13 +31,16 @@ Persistent status bar at the bottom of your terminal:
 | `[GREEN]` | SubagentStart hook | TDD phase color (RED/GREEN/YELLOW/BLUE/PURPLE/ORANGE/WHITE) |
 | `v0.2` | status.json | Active plan version |
 | `dev ●` | git | Branch + dirty indicator |
-| `3/8 done` | checklist.json | Task progress |
-| `ctx:45%` | Claude Code stdin | Context window usage with bar |
+| `3/8 done` | checklist.json | Task progress + blocked count |
+| `5h:[■■■■□□□□]52%` | OAuth API | 5-hour rate limit with reset countdown |
+| `wk:[■□□□□□□□]10%` | OAuth API | Weekly rate limit with reset countdown |
+| `session:45m` | status.json | Session duration |
+| `ctx:[■■■■■□□□□□]47%` | Claude Code stdin | Context window usage (warns at 75%, critical at 90%) |
 | `opus` | Claude Code stdin | Current model |
 
 Setup: `/jaewon-plugin:hud-setup`
 
-## Skills (8)
+## Skills (11)
 
 | Skill | Invoke | Purpose |
 |-------|--------|---------|
@@ -45,10 +48,13 @@ Setup: `/jaewon-plugin:hud-setup`
 | implement | `/jaewon-plugin:implement` | Execute plan with TDD agents (test-generator RED → implementer GREEN) |
 | debug | `/jaewon-plugin:debug` | Isolated trace-then-fix debugging with debug-history |
 | add-feature | `/jaewon-plugin:add-feature` | Feature branch + lighter planning + implement |
-| hook-designer | `/jaewon-plugin:hook-designer` | Design, test, and install hooks interactively |
+| hook-designer | `/jaewon-plugin:hook-designer` | Design, test, and install hooks iteratively |
 | insights | `/jaewon-plugin:insights` | Usage analytics HTML report |
 | status | `/jaewon-plugin:status` | Show full pipeline HUD on demand |
 | hud-setup | `/jaewon-plugin:hud-setup` | Configure HUD statusline |
+| smart-compact | `/jaewon-plugin:smart-compact` | Focus-aware compaction (up to 3 clarifying rounds) |
+| skill-creator | `/jaewon-plugin:skill-creator` | Create, test, evaluate, and iterate skills with benchmarks |
+| agent-development | `/jaewon-plugin:agent-development` | Create agents with frontmatter, examples, and validation |
 
 Skills use progressive disclosure — core workflow loads on trigger (~100-150 LOC), reference files load only when needed.
 
@@ -69,19 +75,19 @@ Skills use progressive disclosure — core workflow loads on trigger (~100-150 L
 
 ## Hooks (11)
 
-| Hook | Event | Updates in status.json |
-|------|-------|----------------------|
-| session-start | SessionStart | session.last_start, total_sessions, git.branch, wiki staleness |
-| subagent-start | SubagentStart | plan.phase, hud.active_task, hud.overall_color |
-| subagent-tracker | SubagentStop | hud.progress, hud.blocked_count, hud.overall_color |
-| stop-guard | Stop | (reads checklist, blocks if tasks remain) |
-| teammate-dispatcher | TeammateIdle | (reads checklist, assigns next task) |
-| test-tracker | PostToolUse:Bash | tracking.test_runs, git.recent_commits, wiki commit hint |
-| file-tracker | PostToolUse:Write\|Edit | tracking.recent_files, LOD 800 LOC warning |
-| pre-tool-enforcer | PreToolUse:Bash | (blocks dangerous commands, warns on main branch) |
-| pre-compact | PreCompact | hud.last_updated, handoff.md, wiki lint hint |
-| session-end | SessionEnd | session.last_end, logging.enabled, wiki log.md |
-| task-sync | TaskCompleted | (syncs TaskList with checklist.json) |
+| Hook | Event | What it does |
+|------|-------|-------------|
+| session-start | SessionStart | Init `.jaewon/`, restore state, inject handoff, wiki staleness check |
+| subagent-start | SubagentStart | Set active phase + task in status.json (HUD shows what's happening) |
+| subagent-tracker | SubagentStop | Update checklist + HUD progress + wiki task hint |
+| stop-guard | Stop | Block stop if tasks remain in checklist |
+| teammate-dispatcher | TeammateIdle | Assign next unblocked task to idle teammate |
+| test-tracker | PostToolUse:Bash | Track test results + git commits + wiki commit hint |
+| file-tracker | PostToolUse:Write\|Edit | Track file changes + LOD 800 LOC warning |
+| pre-tool-enforcer | PreToolUse:Bash | Block dangerous commands, warn on main branch |
+| pre-compact | PreCompact | Save handoff + read smart-compact focus + wiki lint hint |
+| session-end | SessionEnd | Write summary + handoff + wiki log + auto-disable logging |
+| task-sync | TaskCompleted | Sync TaskList with checklist.json |
 
 ## MCP Tools (10)
 
