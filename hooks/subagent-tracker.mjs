@@ -11,11 +11,13 @@
  */
 import { readStdin } from './lib/stdin.mjs';
 import { getSettings } from './lib/settings.mjs';
+import { readStatus, saveStatus } from './lib/state.mjs';
 import {
   readChecklist,
   saveChecklist,
   updateTaskStatus,
-  findNewlyUnblocked
+  findNewlyUnblocked,
+  countByStatus
 } from './lib/checklist.mjs';
 
 /**
@@ -83,6 +85,21 @@ async function main() {
 
   const updated = updateTaskStatus(checklist, taskId, status, extra);
   saveChecklist(settings, projectDir, updated);
+
+  // Update status.json HUD fields
+  const projectStatus = readStatus(settings, projectDir);
+  const counts = countByStatus(updated);
+  projectStatus.hud = {
+    ...projectStatus.hud,
+    overall_color: counts.blocked > 0 && counts.pending === 0 ? 'ORANGE'
+      : counts.done === counts.total ? 'GREEN'
+      : counts.in_progress > 0 ? 'GREEN' : 'WHITE',
+    progress: `${counts.done}/${counts.total} done`,
+    active_task: status === 'done' ? null : taskId,
+    blocked_count: counts.blocked,
+    last_updated: new Date().toISOString()
+  };
+  saveStatus(settings, projectDir, projectStatus);
 
   // Find tasks newly unblocked by this completion
   const newlyUnblocked = findNewlyUnblocked(updated, taskId);
