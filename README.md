@@ -5,11 +5,14 @@ Personal Claude Code plugin with self-driving pipeline, TDD-first workflow, LOD-
 ## Install
 
 ```bash
-# Add marketplace
+# 1. Add marketplace
 claude plugin marketplace add lonj7798/jaewon-plugin --branch dev
 
-# Install
+# 2. Install plugin
 claude plugin install jaewon-plugin@jaewon-plugin
+
+# 3. Restart Claude Code, then run setup
+/jaewon-plugin:setup-jaewon
 ```
 
 ### Local dev
@@ -17,6 +20,28 @@ claude plugin install jaewon-plugin@jaewon-plugin
 ```bash
 claude --plugin-dir ./jaewon-plugin
 ```
+
+## Setup
+
+Run `/jaewon-plugin:setup-jaewon` after installing. It asks one question:
+
+```
+What kind of project is this?
+
+1. Empty project (recommended) — starting fresh
+2. Existing project (recommended) — has code, will bootstrap wiki
+3. Global setup — HUD + MCP only
+```
+
+| Mode | What it does |
+|------|-------------|
+| **Empty project** | Init `.jaewon/`, scaffold `docs/wiki/`, install MCP, configure HUD, create `dev` branch |
+| **Existing project** | Same + spawns wiki-maintainer to scan your codebase and build wiki pages automatically. Agents immediately understand your project. |
+| **Global** | Configure HUD statusline + verify MCP (no project state) |
+
+After setup, your next step is:
+- Empty project → `/jaewon-plugin:initial-plan` to plan your project
+- Existing project → `/jaewon-plugin:initial-plan` or `/jaewon-plugin:add-feature`
 
 ## HUD Statusline
 
@@ -40,10 +65,11 @@ Persistent status bar at the bottom of your terminal:
 
 Setup: `/jaewon-plugin:hud-setup`
 
-## Skills (11)
+## Skills (12)
 
 | Skill | Invoke | Purpose |
 |-------|--------|---------|
+| setup-jaewon | `/jaewon-plugin:setup-jaewon` | One-command project setup (state, wiki, MCP, HUD, git) |
 | initial-plan | `/jaewon-plugin:initial-plan` | QA interview + Planner/Architect/Critic consensus loop |
 | implement | `/jaewon-plugin:implement` | Execute plan with TDD agents (test-generator RED → implementer GREEN) |
 | debug | `/jaewon-plugin:debug` | Isolated trace-then-fix debugging with debug-history |
