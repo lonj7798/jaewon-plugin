@@ -1,6 +1,6 @@
 {
   "name": "jaewon-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Personal Claude Code plugin — self-driving pipeline, TDD-first workflow, LOD-compliant planning",
   "author": {
     "name": "Jaewon"
