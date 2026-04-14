@@ -35,10 +35,15 @@ Error-healing is the fast-path error fixer. It takes an error (pasted, from term
 
 <Steps>
 
+## Step 0: Check Hook Errors
+Read `.jaewon/hook-errors.json` if it exists. If there are recent hook errors (last 10 minutes), display them and prioritize fixing them. Hook errors include the script path — read that file to diagnose and fix.
+When fixing hook errors: edit the hook source file, then test with `echo '{}' | node hooks/run.cjs hooks/{name}.mjs` to verify.
+
 ## Step 1: Parse the Error
 Extract from the error: error type, message, file path, line number, stack trace.
-If user didn't provide the error, ask: "Paste the error message or tell me what command failed."
-Categorize: build | type | import | runtime | test | lint | config | unknown
+If user didn't provide the error, check `.jaewon/hook-errors.json` for recent failures.
+If still no error, ask: "Paste the error message or tell me what command failed."
+Categorize: build | type | import | runtime | test | lint | config | hook | unknown
 
 ## Step 2: Locate the Source
 Read the file and surrounding context at the error location.
