@@ -8,18 +8,6 @@
   "license": "MIT",
   "keywords": ["claude-code", "plugin", "pipeline", "tdd", "lod"],
   "skills": "./skills/",
-  "agents": [
-    "./agents/planner.md",
-    "./agents/architect.md",
-    "./agents/critic.md",
-    "./agents/test-generator.md",
-    "./agents/implementer.md",
-    "./agents/tracer.md",
-    "./agents/fixer.md",
-    "./agents/reviewer.md",
-    "./agents/git-manager.md",
-    "./agents/wiki-maintainer.md"
-  ],
   "hooks": "./hooks/hooks.json",
   "mcpServers": "./.mcp.json"
 }
