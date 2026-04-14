@@ -6,7 +6,7 @@ Personal Claude Code plugin with self-driving pipeline, TDD-first workflow, LOD-
 
 ```bash
 # 1. Add marketplace
-claude plugin marketplace add lonj7798/jaewon-plugin --branch dev
+claude plugin marketplace add lonj7798/jaewon-plugin
 
 # 2. Install plugin
 claude plugin install jaewon-plugin@jaewon-plugin
