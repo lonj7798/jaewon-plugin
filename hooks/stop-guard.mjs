@@ -65,7 +65,10 @@ async function main() {
   }
 
   // --- Check 2: Active phase in status.json ---
-  const activePhase = status.plan?.phase || status.hud?.active_phase;
+  // plan.phase is the source of truth. Only fall back to hud.active_phase
+  // if plan.phase is undefined (not set). null means explicitly cleared.
+  const planPhase = status.plan?.phase;
+  const activePhase = planPhase !== undefined ? planPhase : status.hud?.active_phase;
   const activeTask = status.hud?.active_task;
   const progress = status.hud?.progress;
   const lastUpdated = status.hud?.last_updated;
