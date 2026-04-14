@@ -54,8 +54,16 @@ async function main() {
   const activePhase = status.plan?.phase || status.hud?.active_phase;
   const activeTask = status.hud?.active_task;
   const progress = status.hud?.progress;
+  const lastUpdated = status.hud?.last_updated;
 
-  if (activePhase && activePhase !== 'idle' && activePhase !== 'done') {
+  // Skip stale status (older than 30 minutes or from a different session)
+  const isStale = (() => {
+    if (!lastUpdated) return true;
+    const age = Date.now() - new Date(lastUpdated).getTime();
+    return age > 30 * 60 * 1000; // 30 minutes
+  })();
+
+  if (!isStale && activePhase && activePhase !== 'idle' && activePhase !== 'done') {
     // Parse progress like "3/8" to see if work remains
     let workRemains = true;
     if (progress) {
