@@ -89,16 +89,25 @@ async function main() {
   // Update status.json HUD fields
   const projectStatus = readStatus(settings, projectDir);
   const counts = countByStatus(updated);
+  const allDone = counts.total > 0 && counts.done >= counts.total;
+
   projectStatus.hud = {
     ...projectStatus.hud,
-    overall_color: counts.blocked > 0 && counts.pending === 0 ? 'ORANGE'
-      : counts.done === counts.total ? 'GREEN'
+    overall_color: allDone ? 'GREEN'
+      : counts.blocked > 0 && counts.pending === 0 ? 'ORANGE'
       : counts.in_progress > 0 ? 'GREEN' : 'WHITE',
-    progress: `${counts.done}/${counts.total} done`,
-    active_task: status === 'done' ? null : taskId,
+    progress: `${counts.done}/${counts.total}`,
+    active_task: allDone ? null : (status === 'done' ? null : taskId),
+    active_phase: allDone ? null : projectStatus.hud?.active_phase,
     blocked_count: counts.blocked,
     last_updated: new Date().toISOString()
   };
+
+  // Clear plan.phase when all tasks complete
+  if (allDone && projectStatus.plan) {
+    projectStatus.plan.phase = 'done';
+  }
+
   saveStatus(settings, projectDir, projectStatus);
 
   // Find tasks newly unblocked by this completion
