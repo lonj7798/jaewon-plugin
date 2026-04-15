@@ -72,10 +72,7 @@ async function main() {
   }
 
   console.log(JSON.stringify({
-    hookSpecificOutput: {
-      hookEventName: 'PreCompact',
-      additionalContext: `Handoff written before compaction. ${counts.done}/${counts.total} tasks done.${wikiHint}${focusHint}`
-    }
+    systemMessage: `Handoff written before compaction. ${counts.done}/${counts.total} tasks done.${wikiHint}${focusHint}`
   }));
 }
 
