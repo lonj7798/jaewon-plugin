@@ -63,13 +63,38 @@ async function main() {
   const lastMessage = data.last_assistant_message || '';
   const taskId = extractTaskId(lastMessage);
 
-  // Not a tracked task — nothing to do
+  const projectDir = data.cwd || process.cwd();
+  const settings = getSettings(projectDir);
+
+  // Always clear plan.phase if the completing agent set it
+  // (subagent-start.mjs sets phase based on agent type, so we must clear on stop)
+  const agentType = data.agent_type || '';
+  const agentName = agentType.includes(':') ? agentType.split(':').pop() : agentType;
+  const phaseMap = {
+    'planner': 'plan', 'architect': 'plan', 'critic': 'plan',
+    'test-generator': 'implement', 'implementer': 'implement',
+    'tracer': 'debug', 'fixer': 'debug',
+    'reviewer': 'review', 'wiki-maintainer': 'wiki',
+    'git-manager': 'git'
+  };
+  const agentPhase = phaseMap[agentName];
+  if (agentPhase) {
+    const projectStatus = readStatus(settings, projectDir);
+    if (projectStatus.plan?.phase === agentPhase) {
+      projectStatus.plan.phase = null;
+      projectStatus.hud = {
+        ...projectStatus.hud,
+        active_task: null,
+        last_updated: new Date().toISOString()
+      };
+      saveStatus(settings, projectDir, projectStatus);
+    }
+  }
+
+  // Not a tracked task — nothing more to do
   if (!taskId) {
     process.exit(0);
   }
-
-  const projectDir = data.cwd || process.cwd();
-  const settings = getSettings(projectDir);
   const checklist = readChecklist(settings, projectDir);
 
   if (!checklist) {
