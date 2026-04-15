@@ -47,15 +47,21 @@ async function main() {
   if (checklist) {
     const counts = countByStatus(checklist);
 
+    // If all tasks are done, allow stop regardless of phase field
+    if (counts.total > 0 && counts.done >= counts.total) {
+      process.exit(0);
+    }
+
     if (counts.pending > 0 || counts.in_progress > 0) {
       const next = findNextUnblocked(checklist);
 
       if (next) {
         incrementBlockCount(counterFile);
         const reason = [
-          `⚠ ${counts.pending + counts.in_progress} tasks remaining (${counts.done}/${counts.total} done).`,
+          `${counts.pending + counts.in_progress} tasks remaining.`,
+          `${counts.done}/${counts.total} done.`,
           `Next: ${next.id} — ${next.name}.`,
-          'Continue working on the remaining tasks.'
+          'Continue implementation.'
         ].join(' ');
 
         console.log(JSON.stringify({ decision: 'block', reason }));
@@ -65,22 +71,22 @@ async function main() {
   }
 
   // --- Check 2: Active phase in status.json ---
-  // plan.phase is the source of truth. Only fall back to hud.active_phase
-  // if plan.phase is undefined (not set). null means explicitly cleared.
+  // plan.phase is source of truth. null means explicitly cleared.
   const planPhase = status.plan?.phase;
   const activePhase = planPhase !== undefined ? planPhase : status.hud?.active_phase;
-  const activeTask = status.hud?.active_task;
   const progress = status.hud?.progress;
   const lastUpdated = status.hud?.last_updated;
 
-  // Skip stale status (older than 30 minutes or from a different session)
+  // Skip stale status (older than 30 minutes)
   const isStale = (() => {
     if (!lastUpdated) return true;
     const age = Date.now() - new Date(lastUpdated).getTime();
-    return age > 30 * 60 * 1000; // 30 minutes
+    return age > 30 * 60 * 1000;
   })();
 
-  if (!isStale && activePhase && activePhase !== 'idle' && activePhase !== 'done') {
+  // Treat null, 'idle', 'done', 'plan' as non-blocking
+  const idlePhases = [null, undefined, 'idle', 'done', 'plan'];
+  if (!isStale && !idlePhases.includes(activePhase)) {
     let workRemains = true;
     if (progress) {
       const match = progress.match(/^(\d+)\/(\d+)/);
@@ -93,7 +99,6 @@ async function main() {
       incrementBlockCount(counterFile);
       const parts = [`⚠ Active phase: "${activePhase}".`];
       if (progress) parts.push(`Progress: ${progress}.`);
-      if (activeTask) parts.push(`Current task: ${activeTask}.`);
       parts.push('Check status and continue working on remaining items.');
 
       console.log(JSON.stringify({ decision: 'block', reason: parts.join(' ') }));
