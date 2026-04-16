@@ -50,8 +50,14 @@ All runtime data lives in `.jaewon/` at project root:
 | `debug` | "debug", "fix" | tracer -> fixer with evidence gate |
 | `add-feature` | "add feature", "extend" | plan -> implement -> review cycle |
 | `hook-designer` | "design hook", "new hook" | Scaffold hook script + register in hooks.json |
-| `insights` | "insights", "what did we learn" | Surface `.jaewon/insights.md` |
-| `status` | "status", "where are we" | Print `.jaewon/state.json` summary |
+| `error-healing` | "error", "fix error", "heal" | Fast-path error fix with verification |
+| `insights` | "insights", "what did we learn" | Generate usage analytics HTML dashboard |
+| `status` | "status", "where are we" | Print `.jaewon/status.json` summary |
+| `hud-setup` | "setup hud", "statusline" | Configure Claude Code statusline |
+| `smart-compact` | "smart compact" | Focus-aware context compaction |
+| `setup-jaewon` | "setup jaewon" | Initialize plugin for a project |
+| `skill-creator` | "create skill", "new skill" | Create, test, and optimize skills |
+| `agent-development` | "create agent", "new agent" | Guide for building agent definitions |
 
 ## Agents
 
@@ -65,6 +71,7 @@ All runtime data lives in `.jaewon/` at project root:
 | `tracer` | Traces call chains to locate bug root cause |
 | `fixer` | Applies targeted fix after tracer confirms root cause |
 | `reviewer` | Code review against codebase patterns |
+| `wiki-maintainer` | Maintains project wiki pages and index |
 | `git-manager` | Stages, commits, and pushes with correct message format |
 
 ## MCP Tools

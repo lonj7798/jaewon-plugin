@@ -36,13 +36,15 @@ description: |
   and issues updated verdict.
   </commentary>
   </example>
-model: claude-opus-4-6
+model: opus
 color: yellow
 tools:
   - Read
   - Grep
   - Glob
-disallowedTools: Write, Edit
+disallowedTools:
+  - Write
+  - Edit
 ---
 
 <Agent_Prompt>

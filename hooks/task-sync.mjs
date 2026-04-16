@@ -44,10 +44,7 @@ async function main() {
   if (originalJson !== updatedJson) {
     saveChecklist(settings, projectDir, updated);
     console.log(JSON.stringify({
-      hookSpecificOutput: {
-        hookEventName: 'TaskCompleted',
-        additionalContext: `Task ${taskId} marked as done in checklist.`
-      }
+      systemMessage: `Task ${taskId} marked as done in checklist.`
     }));
   }
 }
