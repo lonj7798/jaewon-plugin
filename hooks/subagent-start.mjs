@@ -54,10 +54,7 @@ async function main() {
   // Inject context about what's starting
   if (agentName) {
     console.log(JSON.stringify({
-      hookSpecificOutput: {
-        hookEventName: 'SubagentStart',
-        additionalContext: `Agent started: ${agentName} (phase: ${phase || 'unknown'})`
-      }
+      systemMessage: `Agent started: ${agentName} (phase: ${phase || 'unknown'})`
     }));
   }
 }

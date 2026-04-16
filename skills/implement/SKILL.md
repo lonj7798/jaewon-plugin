@@ -138,9 +138,8 @@ Hook assistance: SubagentStop logs results and nudges next dispatch; TeammateIdl
 - `Bash` for git operations (log commits, verify branches)
 - `SendMessage` for teammate dispatch (preferred); `TeamCreate`/`TeamDelete` for pools
 - `Task(subagent_type="oh-my-claudecode:executor", model="sonnet")` for agent fallback
-- `jaewon_state_write`/`jaewon_state_read` for `.jaewon/status.json`
+- `jaewon_status_update`/`jaewon_status` for `.jaewon/status.json`
 - `jaewon_checklist_update` for checklist items (when MCP tools available)
-- `jaewon_session_log` for logging completions
 - Do NOT write code in the main session -- always spawn agents
 </Tool_Usage>
 

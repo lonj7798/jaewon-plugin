@@ -18,6 +18,13 @@ description: |
   </example>
 model: sonnet
 color: green
+tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
 ---
 
 <Agent_Prompt>

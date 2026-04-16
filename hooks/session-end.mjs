@@ -84,10 +84,7 @@ async function main() {
   saveStatus(settings, projectDir, status);
 
   console.log(JSON.stringify({
-    hookSpecificOutput: {
-      hookEventName: 'SessionEnd',
-      additionalContext: `Session #${sessionNum} ended. ${counts.done}/${counts.total} tasks done. Handoff written.`
-    }
+    systemMessage: `Session #${sessionNum} ended. ${counts.done}/${counts.total} tasks done. Handoff written.`
   }));
 }
 

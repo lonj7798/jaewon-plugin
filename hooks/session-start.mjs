@@ -146,10 +146,7 @@ async function main() {
   } catch { /* ignore */ }
 
   console.log(JSON.stringify({
-    hookSpecificOutput: {
-      hookEventName: 'SessionStart',
-      additionalContext: contextParts.join('\n')
-    }
+    systemMessage: contextParts.join('\n')
   }));
 }
 

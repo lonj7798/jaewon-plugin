@@ -10,7 +10,7 @@
  * Fetches rate limits from OAuth API (cached).
  */
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync, statSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync, statSync, readSync } from 'fs';
 import { join, dirname } from 'path';
 import { execSync, execFileSync } from 'child_process';
 import https from 'https';
@@ -38,7 +38,7 @@ function readStdinSync() {
     const chunks = [];
     const buf = Buffer.alloc(65536);
     let n;
-    try { while ((n = require('fs').readSync(0, buf, 0, buf.length)) > 0) chunks.push(buf.slice(0, n)); } catch { /**/ }
+    try { while ((n = readSync(0, buf, 0, buf.length)) > 0) chunks.push(buf.slice(0, n)); } catch { /**/ }
     const raw = Buffer.concat(chunks).toString('utf-8').trim();
     return raw ? JSON.parse(raw) : {};
   } catch { return {}; }

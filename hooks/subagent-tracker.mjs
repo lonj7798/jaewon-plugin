@@ -126,10 +126,7 @@ async function main() {
   ].join(' ');
 
   console.log(JSON.stringify({
-    hookSpecificOutput: {
-      hookEventName: 'SubagentStop',
-      additionalContext: context
-    }
+    systemMessage: context
   }));
 }
 
