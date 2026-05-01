@@ -32,6 +32,7 @@ Execute a plan's tasks through TDD workflow. The main session is the intent laye
 - Wait for sub-batch completion before starting the next sub-batch
 - Self-driving hooks (Stop/SubagentStop/TeammateIdle) assist the execution loop
 - Re-read `checklist.json` before each batch to avoid stale state
+- **Live progress feedback (issue #9)**: emit a one-line dispatch/completion update for every state transition AND keep `.jaewon/progress.md` current — the user must never have to ask "are you still working?"
 </Execution_Policy>
 
 <Steps>
@@ -71,6 +72,22 @@ Main session creates a focused brief -- the ONLY input spawned agents receive:
 - Done when: {criteria}, all tests pass, committed as {format}
 - If blocked: write to `.jaewon/blocked/{task-id}.md` with attempts, errors, alternatives
 ```
+
+### 3a.1: Emit Dispatch Line (Live Progress)
+
+Before each agent spawn, print a one-line update so the user sees motion in real time. Format:
+
+```
+▸ {task-id} dispatched ({stage})    e.g.,  ▸ p1-t3 dispatched (RED)
+```
+
+After the spawn returns (regardless of outcome), print:
+
+```
+✓ {task-id} done (commit {short-hash})    or    ✗ {task-id} blocked: {one-line reason}
+```
+
+These two lines are the user's primary live signal between batches. Do NOT batch them; emit on each state change. The `.jaewon/progress.md` file (refreshed by the SubagentStop hook) provides the at-a-glance table for tail/IDE consumers.
 
 ### 3b: Spawn Test-Generator (RED)
 
@@ -194,6 +211,8 @@ Why bad: TDD requires RED before GREEN. Implementer needs tests from test-genera
 - [ ] Loop continued until all done or all remaining blocked
 - [ ] Completion summary displayed; `.jaewon/status.json` updated
 - [ ] No stale `in_progress` or missed `pending` tasks remain
+- [ ] Dispatch/completion lines emitted on every state transition (no silent gaps)
+- [ ] `.jaewon/progress.md` is up to date (auto-written by SubagentStop hook)
 </Final_Checklist>
 
 Task: {{ARGUMENTS}}
