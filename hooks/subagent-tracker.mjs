@@ -19,6 +19,7 @@ import {
   findNewlyUnblocked,
   countByStatus
 } from './lib/checklist.mjs';
+import { writeProgressFile } from './lib/progress.mjs';
 
 /**
  * Extract task ID from agent message.
@@ -109,6 +110,12 @@ async function main() {
   }
 
   saveStatus(settings, projectDir, projectStatus);
+
+  // Live progress file — gives the user (and external tailers) an at-a-glance
+  // markdown view of the plan without waiting for the next dispatch (issue #9).
+  writeProgressFile(settings, projectDir, updated, {
+    timestamp: new Date().toISOString()
+  });
 
   // Find tasks newly unblocked by this completion
   const newlyUnblocked = findNewlyUnblocked(updated, taskId);

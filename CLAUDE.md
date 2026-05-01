@@ -30,6 +30,7 @@ All runtime data lives in `.jaewon/` at project root:
 .jaewon/
   settings.json    # configurable paths + preferences
   status.json      # current phase, task list, agent assignments
+  progress.md      # live markdown table of task progress (auto-refreshed)
   session-log.md   # session history
   context/         # handoff.md for zero-ramp-up sessions
   blocked/         # failed task reports
