@@ -58,6 +58,7 @@ All runtime data lives in `.jaewon/` at project root:
 | `setup-jaewon` | "setup jaewon" | Initialize plugin for a project |
 | `skill-creator` | "create skill", "new skill" | Create, test, and optimize skills |
 | `agent-development` | "create agent", "new agent" | Guide for building agent definitions |
+| `retrieve` | "retrieve", "lookup", "have we seen" | Spawn retrieval-agent to fetch info across lanes without bloating main context |
 
 ## Agents
 
@@ -73,6 +74,7 @@ All runtime data lives in `.jaewon/` at project root:
 | `reviewer` | Code review against codebase patterns |
 | `wiki-maintainer` | Maintains project wiki pages and index |
 | `git-manager` | Stages, commits, and pushes with correct message format |
+| `retrieval-agent` | Read-only retrieval lane: distills answers from project, .jaewon, wiki, git, web |
 
 ## MCP Tools
 
