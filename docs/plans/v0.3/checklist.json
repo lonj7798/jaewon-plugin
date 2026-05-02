@@ -1,0 +1,64 @@
+{
+  "plan_version": "v0.3",
+  "theme": "harness that learns and gates itself",
+  "phases": [
+    {
+      "id": "p0",
+      "name": "Housekeeping",
+      "tasks": [
+        {"id": "p0-t1", "title": "Merge PR #11 (live progress feedback)", "status": "pending", "depends_on": [], "parallel": false, "tdd_stage": "n/a", "notes": "closes #9; requires GitHub reachable"},
+        {"id": "p0-t2", "title": "Audit hooks.json for PreToolUse:Bash matcher dedup; consolidate to single dispatcher", "status": "pending", "depends_on": [], "parallel": true, "tdd_stage": "red"},
+        {"id": "p0-t3", "title": "Add JSONL hook-trace artifact to every existing hook (verifiable side-effect)", "status": "pending", "depends_on": ["p0-t2"], "parallel": false, "tdd_stage": "red"},
+        {"id": "p0-t4", "title": "Hook smoke test asserting each hook produces its side-effect", "status": "pending", "depends_on": ["p0-t3"], "parallel": false, "tdd_stage": "red"}
+      ]
+    },
+    {
+      "id": "p1",
+      "name": "Foundation — trace capture + token budget",
+      "tasks": [
+        {"id": "p1-t1", "title": "hooks/trace-capture.mjs on PostToolUse:Write|Edit -> .jaewon/traces/YYYY-MM-DD.jsonl", "status": "pending", "depends_on": ["p0-t4"], "parallel": false, "tdd_stage": "red"},
+        {"id": "p1-t2", "title": "Token budget on session-start.mjs (~2000 tokens, explicit selection)", "status": "pending", "depends_on": ["p0-t4"], "parallel": true, "tdd_stage": "red"},
+        {"id": "p1-t3", "title": "MCP tool jaewon_traces (read/search/summarize)", "status": "pending", "depends_on": ["p1-t1"], "parallel": false, "tdd_stage": "red"}
+      ]
+    },
+    {
+      "id": "p2",
+      "name": "Quality gates — review evidence + native post-commit",
+      "tasks": [
+        {"id": "p2-t1", "title": "Split reviewer into reviewer-structural + reviewer-deep; each writes evidence", "status": "pending", "depends_on": ["p1-t1"], "parallel": false, "tdd_stage": "red"},
+        {"id": "p2-t2", "title": "Cleanup-pattern + LOC scan; .jaewon/pre-commit-config.json", "status": "pending", "depends_on": [], "parallel": true, "tdd_stage": "red"},
+        {"id": "p2-t3", "title": "hooks/pre-commit-review.mjs + .jaewon/review-evidence.jsonl gate", "status": "pending", "depends_on": ["p2-t1", "p2-t2"], "parallel": false, "tdd_stage": "red"},
+        {"id": "p2-t4", "title": "Native git post-commit scribe (.git/hooks/post-commit) + last-scribe-head marker", "status": "pending", "depends_on": ["p2-t3"], "parallel": false, "tdd_stage": "red"},
+        {"id": "p2-t5", "title": "setup-jaewon installs the git hooks; --no-verify documented", "status": "pending", "depends_on": ["p2-t4"], "parallel": false, "tdd_stage": "red"}
+      ]
+    },
+    {
+      "id": "p3",
+      "name": "Decision-forcing — hard-gated decisions + PR skill",
+      "tasks": [
+        {"id": "p3-t1", "title": "Skills /jaewon-decision-feature/-bugfix/-refactor (block on scope/non-goals/success/blast-radius)", "status": "pending", "depends_on": ["p2-t5"], "parallel": false, "tdd_stage": "red"},
+        {"id": "p3-t2", "title": "Wire initial-plan and add-feature to require a decision doc", "status": "pending", "depends_on": ["p3-t1"], "parallel": false, "tdd_stage": "red"},
+        {"id": "p3-t3", "title": "Skill /jaewon-pr — Codex fresh-eyes + readiness checklist + auto-drafted body", "status": "pending", "depends_on": ["p2-t5"], "parallel": true, "tdd_stage": "red"}
+      ]
+    },
+    {
+      "id": "p4",
+      "name": "Learning loop — reflect/synthesize/evolve",
+      "tasks": [
+        {"id": "p4-t1", "title": "Skill /jaewon-reflect (manual session-end reflection)", "status": "pending", "depends_on": ["p1-t3"], "parallel": true, "tdd_stage": "red"},
+        {"id": "p4-t2", "title": "Agent synthesizer (sonnet) emits .jaewon/evolve/proposals.json", "status": "pending", "depends_on": ["p4-t1"], "parallel": false, "tdd_stage": "red"},
+        {"id": "p4-t3", "title": "Skill /jaewon-evolve — manual, per-item approval, >=2-source rule, evolve(v0.3) commits", "status": "pending", "depends_on": ["p4-t2"], "parallel": false, "tdd_stage": "red"},
+        {"id": "p4-t4", "title": "SessionStart nudge when /jaewon-evolve hasn't run in N days", "status": "pending", "depends_on": ["p4-t3"], "parallel": false, "tdd_stage": "red"}
+      ]
+    },
+    {
+      "id": "p5",
+      "name": "Onboarding & guardrails",
+      "tasks": [
+        {"id": "p5-t1", "title": "Skill /jaewon-scout (scout-report.md via retrieval-agent)", "status": "pending", "depends_on": ["p1-t3"], "parallel": true, "tdd_stage": "red"},
+        {"id": "p5-t2", "title": "Author context/core-beliefs.md and context/vision.md", "status": "pending", "depends_on": [], "parallel": true, "tdd_stage": "n/a"},
+        {"id": "p5-t3", "title": "Skill /jaewon-distinguished-engineer — drift checks against core-beliefs.md", "status": "pending", "depends_on": ["p5-t2"], "parallel": false, "tdd_stage": "red"}
+      ]
+    }
+  ]
+}
