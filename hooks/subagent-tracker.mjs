@@ -20,6 +20,7 @@ import {
   countByStatus
 } from './lib/checklist.mjs';
 import { writeProgressFile } from './lib/progress.mjs';
+import { traceHook } from './lib/hook-trace.mjs';
 
 /**
  * Extract task ID from agent message.
@@ -63,6 +64,11 @@ async function main() {
 
   const lastMessage = data.last_assistant_message || '';
   const taskId = extractTaskId(lastMessage);
+
+  traceHook('subagent-tracker', data.cwd || process.cwd(), {
+    task_id: taskId,
+    agent_type: data.agent_type || 'unknown'
+  });
 
   // Not a tracked task — nothing to do
   if (!taskId) {

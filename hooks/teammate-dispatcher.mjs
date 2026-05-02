@@ -13,6 +13,7 @@ import { readStdin } from './lib/stdin.mjs';
 import { getSettings } from './lib/settings.mjs';
 import { readChecklist, findNextUnblocked } from './lib/checklist.mjs';
 import { readStatus } from './lib/state.mjs';
+import { traceHook } from './lib/hook-trace.mjs';
 
 async function main() {
   const input = await readStdin(3000);
@@ -20,6 +21,7 @@ async function main() {
   try { data = JSON.parse(input); } catch { /* empty */ }
 
   const projectDir = data.cwd || process.cwd();
+  traceHook('teammate-dispatcher', projectDir, { teammate_id: data.teammate_id || null });
   const settings = getSettings(projectDir);
   const checklist = readChecklist(settings, projectDir);
 

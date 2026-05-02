@@ -12,6 +12,7 @@
 import { readStdin } from './lib/stdin.mjs';
 import { getSettings } from './lib/settings.mjs';
 import { readStatus, saveStatus } from './lib/state.mjs';
+import { traceHook } from './lib/hook-trace.mjs';
 
 const TEST_PATTERNS = [
   /\b(pytest|py\.test)\b/,
@@ -33,11 +34,15 @@ async function main() {
   try { data = JSON.parse(input); } catch { /* empty */ }
 
   const command = data.tool_input?.command || '';
+  const projectDir = data.cwd || process.cwd();
+  // Trace at the top: confirms (or disproves) that PostToolUse:Bash dispatches.
+  // If this line never appears in .jaewon/hook-trace.jsonl after a Bash call,
+  // the platform constraint documented in hooks/CLAUDE.md is live for us too.
+  traceHook('test-tracker', projectDir, { cmd_prefix: command.slice(0, 60) });
   if (!command) {
     process.exit(0);
   }
 
-  const projectDir = data.cwd || process.cwd();
   const settings = getSettings(projectDir);
   const status = readStatus(settings, projectDir);
   const context = [];

@@ -12,6 +12,7 @@
 import { readStdin } from './lib/stdin.mjs';
 import { getSettings } from './lib/settings.mjs';
 import { getCurrentBranch } from './lib/session-helpers.mjs';
+import { traceHook } from './lib/hook-trace.mjs';
 
 const BLOCKED_PATTERNS = [
   { pattern: /rm\s+(-[a-zA-Z]*f[a-zA-Z]*\s+)?\/\s*$/, reason: 'Blocked: rm -rf / is destructive' },
@@ -34,6 +35,8 @@ async function main() {
   try { data = JSON.parse(input); } catch { /* empty */ }
 
   const command = data.tool_input?.command || '';
+  const projectDir = data.cwd || process.cwd();
+  traceHook('pre-tool-enforcer', projectDir, { cmd_prefix: command.slice(0, 60) });
   if (!command) {
     process.exit(0);
   }
@@ -51,7 +54,6 @@ async function main() {
 
   // Check warning patterns
   const warnings = [];
-  const projectDir = data.cwd || process.cwd();
 
   for (const { pattern, check } of WARN_PATTERNS) {
     if (!pattern.test(command)) continue;

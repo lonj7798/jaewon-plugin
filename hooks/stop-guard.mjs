@@ -16,6 +16,7 @@ import { readStdin } from './lib/stdin.mjs';
 import { getSettings } from './lib/settings.mjs';
 import { readStatus } from './lib/state.mjs';
 import { readChecklist, countByStatus, findNextUnblocked } from './lib/checklist.mjs';
+import { traceHook } from './lib/hook-trace.mjs';
 
 const MAX_BLOCKS = 3; // Allow stop after blocking this many times
 
@@ -23,6 +24,10 @@ async function main() {
   const input = await readStdin(3000);
   let data = {};
   try { data = JSON.parse(input); } catch { /* empty */ }
+
+  traceHook('stop-guard', data.cwd || process.cwd(), {
+    stop_hook_active: !!data.stop_hook_active
+  });
 
   // CRITICAL: Prevent infinite loop — if stop hook already active, allow stop
   if (data.stop_hook_active) {
