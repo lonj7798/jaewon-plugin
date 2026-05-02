@@ -207,42 +207,50 @@
         {
           "id": "p4-t1",
           "title": "Skill /jaewon-reflect (manual session-end reflection)",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p1-t3"
           ],
           "parallel": true,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:27:26.186Z",
+          "notes": "skills/reflect/SKILL.md — manual session-end reflection -> .jaewon/reflections/YYYY-MM-DD.md"
         },
         {
           "id": "p4-t2",
           "title": "Agent synthesizer (sonnet) emits .jaewon/evolve/proposals.json",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p4-t1"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:27:26.186Z",
+          "notes": "agents/synthesizer.md — reads reflections+traces, emits .jaewon/evolve/proposals.json (≤5 per run, source-tagged)"
         },
         {
           "id": "p4-t3",
           "title": "Skill /jaewon-evolve — manual, per-item approval, >=2-source rule, evolve(v0.3) commits",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p4-t2"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:27:26.186Z",
+          "notes": "skills/evolve/SKILL.md — manual per-item approval; ≥2-source rule for agent/skill edits; evolve(v0.3) commits"
         },
         {
           "id": "p4-t4",
           "title": "SessionStart nudge when /jaewon-evolve hasn't run in N days",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p4-t3"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:27:26.186Z",
+          "notes": "session-start.mjs nudge: surfaces EVOLVE BACKLOG when ≥3 reflections newer than evolve/log.md"
         }
       ]
     },

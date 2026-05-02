@@ -65,6 +65,8 @@ All runtime data lives in `.jaewon/` at project root:
 | `decision-bugfix` | "decision bugfix", "fix decision" | Hard-gated decision harness: symptom / root cause / fix scope / regression-prevention test |
 | `decision-refactor` | "decision refactor", "refactor scope" | Hard-gated decision harness: scope / non-goals / behavior-preservation contract / rollback plan |
 | `jaewon-pr` | "prepare PR", "ship it", "draft PR" | Codex fresh-eyes pass + readiness checklist + auto-drafted PR body |
+| `reflect` | "reflect", "session reflection", "what did we learn" | Manual session-end reflection -> `.jaewon/reflections/YYYY-MM-DD.md` |
+| `evolve` | "evolve", "apply lessons", "synthesize reflections" | Manual loop: synthesizer -> proposals.json -> per-item approval -> apply + commit |
 
 ## Agents
 
@@ -83,6 +85,7 @@ All runtime data lives in `.jaewon/` at project root:
 | `retrieval-agent` | Read-only retrieval lane: distills answers from project, .jaewon, wiki, git, web |
 | `reviewer-structural` | First-pass review: simplicity, surgical changes, silent errors, security, races (read-only) |
 | `reviewer-deep` | Second-pass review: logic, state, data integrity, observability, performance, test gaps (read-only) |
+| `synthesizer` | Reads reflections + traces, emits `.jaewon/evolve/proposals.json` with targeted patches (≤5 per run) |
 
 ## MCP Tools
 

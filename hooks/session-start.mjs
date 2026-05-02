@@ -9,7 +9,7 @@
  *   Phase 5: Injects handoff context, checks git branch, computes HUD.
  *   Side effects: Creates directories and files
  */
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import { readStdin } from './lib/stdin.mjs';
 import { getSettings, DEFAULTS } from './lib/settings.mjs';
@@ -145,6 +145,29 @@ async function main() {
       }
     } catch { /* ignore */ }
   }
+
+  // 3.5 Evolve backlog nudge — surface unsynthesized reflections so the
+  // learning loop doesn't quietly stall. Manual /jaewon-plugin:evolve only;
+  // no auto-fire (Guya regression history: auto-fire silently rotted for 6
+  // days when API key died).
+  try {
+    const reflectionsDir = join(baseDir, 'reflections');
+    const evolveLog = join(baseDir, 'evolve', 'log.md');
+    if (existsSync(reflectionsDir)) {
+      const reflectionFiles = readdirSync(reflectionsDir).filter(f => /^\d{4}-\d{2}-\d{2}\.md$/.test(f));
+      let lastEvolveTs = 0;
+      if (existsSync(evolveLog)) {
+        try { lastEvolveTs = statSync(evolveLog).mtimeMs; } catch { /* ignore */ }
+      }
+      const newer = reflectionFiles.filter(f => {
+        try { return statSync(join(reflectionsDir, f)).mtimeMs > lastEvolveTs; } catch { return false; }
+      });
+      if (newer.length >= 3) {
+        contextParts.push('');
+        contextParts.push(`EVOLVE BACKLOG: ${newer.length} reflections since last /jaewon-plugin:evolve. Run it to synthesize lessons into proposals.`);
+      }
+    }
+  } catch { /* nudge is non-critical */ }
 
   // 4. Compute and inject HUD
   try {
