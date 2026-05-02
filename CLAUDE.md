@@ -60,6 +60,7 @@ All runtime data lives in `.jaewon/` at project root:
 | `skill-creator` | "create skill", "new skill" | Create, test, and optimize skills |
 | `agent-development` | "create agent", "new agent" | Guide for building agent definitions |
 | `retrieve` | "retrieve", "lookup", "have we seen" | Spawn retrieval-agent to fetch info across lanes without bloating main context |
+| `review` | "review", "before commit", "audit changes" | Two-pass review (structural -> deep) that writes evidence to `.jaewon/review-evidence.jsonl` (gates `git commit`) |
 
 ## Agents
 
@@ -76,6 +77,8 @@ All runtime data lives in `.jaewon/` at project root:
 | `wiki-maintainer` | Maintains project wiki pages and index |
 | `git-manager` | Stages, commits, and pushes with correct message format |
 | `retrieval-agent` | Read-only retrieval lane: distills answers from project, .jaewon, wiki, git, web |
+| `reviewer-structural` | First-pass review: simplicity, surgical changes, silent errors, security, races (read-only) |
+| `reviewer-deep` | Second-pass review: logic, state, data integrity, observability, performance, test gaps (read-only) |
 
 ## MCP Tools
 

@@ -100,51 +100,61 @@
         {
           "id": "p2-t1",
           "title": "Split reviewer into reviewer-structural + reviewer-deep; each writes evidence",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p1-t1"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:17:47.327Z",
+          "notes": "reviewer-structural + reviewer-deep agents created; review skill orchestrates and records evidence"
         },
         {
           "id": "p2-t2",
           "title": "Cleanup-pattern + LOC scan; .jaewon/pre-commit-config.json",
-          "status": "pending",
+          "status": "done",
           "depends_on": [],
           "parallel": true,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:17:47.328Z",
+          "notes": "hooks/lib/pre-commit-scan.mjs (cleanup patterns + LOC cap); template at skills/setup-jaewon/templates/pre-commit-config.json"
         },
         {
           "id": "p2-t3",
           "title": "hooks/pre-commit-review.mjs + .jaewon/review-evidence.jsonl gate",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p2-t1",
             "p2-t2"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:17:47.328Z",
+          "notes": "gate logic added to pre-tool-enforcer.mjs (single-dispatcher rule); --no-verify regex fixed; e2e: missing/bypass/fresh all verified"
         },
         {
           "id": "p2-t4",
           "title": "Native git post-commit scribe (.git/hooks/post-commit) + last-scribe-head marker",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p2-t3"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:17:47.328Z",
+          "notes": "hooks/post-commit-scribe.mjs (session-log append + status update + evidence reset + marker); e2e: real git commit -> session-log appended, evidence cleared, marker advanced"
         },
         {
           "id": "p2-t5",
           "title": "setup-jaewon installs the git hooks; --no-verify documented",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p2-t4"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:17:47.328Z",
+          "notes": "setup-jaewon SKILL.md updated; templates: post-commit.sh wrapper + pre-commit-config.json"
         }
       ]
     },
