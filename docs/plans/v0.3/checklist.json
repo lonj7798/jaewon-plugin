@@ -165,32 +165,38 @@
         {
           "id": "p3-t1",
           "title": "Skills /jaewon-decision-feature/-bugfix/-refactor (block on scope/non-goals/success/blast-radius)",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p2-t5"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:23:07.922Z",
+          "notes": "skills/decision-feature, decision-bugfix, decision-refactor — hard-gated harnesses with required fields + artifact under .jaewon/decisions/"
         },
         {
           "id": "p3-t2",
           "title": "Wire initial-plan and add-feature to require a decision doc",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p3-t1"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:23:07.923Z",
+          "notes": "add-feature and initial-plan now have Step 0 decision-doc gates that block until a fresh artifact exists"
         },
         {
           "id": "p3-t3",
           "title": "Skill /jaewon-pr — Codex fresh-eyes + readiness checklist + auto-drafted body",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p2-t5"
           ],
           "parallel": true,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:23:07.923Z",
+          "notes": "skills/jaewon-pr/SKILL.md — Codex fresh-eyes via omc ask + readiness checklist + auto-drafted body, cross-checked against decision doc"
         }
       ]
     },

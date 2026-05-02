@@ -61,6 +61,10 @@ All runtime data lives in `.jaewon/` at project root:
 | `agent-development` | "create agent", "new agent" | Guide for building agent definitions |
 | `retrieve` | "retrieve", "lookup", "have we seen" | Spawn retrieval-agent to fetch info across lanes without bloating main context |
 | `review` | "review", "before commit", "audit changes" | Two-pass review (structural -> deep) that writes evidence to `.jaewon/review-evidence.jsonl` (gates `git commit`) |
+| `decision-feature` | "plan a feature", "decision feature" | Hard-gated decision harness: scope / non-goals / success criteria / blast radius before any plan |
+| `decision-bugfix` | "decision bugfix", "fix decision" | Hard-gated decision harness: symptom / root cause / fix scope / regression-prevention test |
+| `decision-refactor` | "decision refactor", "refactor scope" | Hard-gated decision harness: scope / non-goals / behavior-preservation contract / rollback plan |
+| `jaewon-pr` | "prepare PR", "ship it", "draft PR" | Codex fresh-eyes pass + readiness checklist + auto-drafted PR body |
 
 ## Agents
 
