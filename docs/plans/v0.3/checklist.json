@@ -58,32 +58,38 @@
         {
           "id": "p1-t1",
           "title": "hooks/trace-capture.mjs on PostToolUse:Write|Edit -> .jaewon/traces/YYYY-MM-DD.jsonl",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p0-t4"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:06:40.475Z",
+          "notes": "hooks/lib/trace-capture.mjs + wired into file-tracker; e2e verified writes .jaewon/traces/YYYY-MM-DD.jsonl"
         },
         {
           "id": "p1-t2",
           "title": "Token budget on session-start.mjs (~2000 tokens, explicit selection)",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p0-t4"
           ],
           "parallel": true,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:06:40.476Z",
+          "notes": "CONTEXT_BUDGET_CHARS=8000 (~2k tokens), head-truncate handoff at 5000, final hard cap; tested with 12k handoff -> 5189 chars output"
         },
         {
           "id": "p1-t3",
           "title": "MCP tool jaewon_traces (read/search/summarize)",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p1-t1"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:06:40.476Z",
+          "notes": "mcp-server/handlers/traces-handler.js (list/read/summarize); registered in server.js; paths.js adds traces; logic test passes"
         }
       ]
     },

@@ -16,6 +16,22 @@ import { getSettings, DEFAULTS } from './lib/settings.mjs';
 import { readStatus, DEFAULT_STATUS } from './lib/state.mjs';
 import { computeHUD, formatCompactHUD } from './lib/hud.mjs';
 import { getCurrentBranch } from './lib/session-helpers.mjs';
+import { traceHook } from './lib/hook-trace.mjs';
+
+// ~2000 tokens at ~4 chars/token. The session-start context block displaces
+// every other piece of context the LLM could be using; budget keeps it honest.
+const CONTEXT_BUDGET_CHARS = 8000;
+// When handoff is over-budget, keep this many leading chars and a tail note.
+// Head-only because the most relevant state is at the top of a handoff
+// (current state, completed/pending tasks).
+const HANDOFF_HEAD_CHARS = 5000;
+
+function truncateHandoff(handoff) {
+  if (handoff.length <= HANDOFF_HEAD_CHARS) return handoff;
+  const head = handoff.slice(0, HANDOFF_HEAD_CHARS);
+  const droppedChars = handoff.length - HANDOFF_HEAD_CHARS;
+  return head + `\n\n_[handoff truncated: ${droppedChars} more chars in .jaewon/context/handoff.md]_`;
+}
 
 async function main() {
   const input = await readStdin(3000);
@@ -87,7 +103,7 @@ async function main() {
     `Session: #${status.session.total_sessions}`
   ];
 
-  // 1. Inject handoff context if exists
+  // 1. Inject handoff context if exists (head-truncated to stay in budget)
   const handoffPath = join(projectDir, settings.paths.context, 'handoff.md');
   if (existsSync(handoffPath)) {
     try {
@@ -95,7 +111,7 @@ async function main() {
       if (handoff) {
         contextParts.push('');
         contextParts.push('## Previous Session Handoff');
-        contextParts.push(handoff);
+        contextParts.push(truncateHandoff(handoff));
       }
     } catch { /* ignore read errors */ }
   }
@@ -145,8 +161,23 @@ async function main() {
     writeFileSync(statusPath, JSON.stringify(status, null, 2), 'utf-8');
   } catch { /* ignore */ }
 
+  // Final budget enforcement: if everything together still blows past the
+  // budget (huge handoff + warnings + long HUD), hard-cap with a tail note.
+  let assembled = contextParts.join('\n');
+  if (assembled.length > CONTEXT_BUDGET_CHARS) {
+    const overflow = assembled.length - CONTEXT_BUDGET_CHARS;
+    assembled = assembled.slice(0, CONTEXT_BUDGET_CHARS) +
+      `\n\n_[context capped at ${CONTEXT_BUDGET_CHARS} chars; ${overflow} more dropped to protect main-session budget]_`;
+  }
+
+  traceHook('session-start', projectDir, {
+    chars: assembled.length,
+    over_budget: assembled.length > CONTEXT_BUDGET_CHARS,
+    has_handoff: existsSync(handoffPath)
+  });
+
   console.log(JSON.stringify({
-    systemMessage: contextParts.join('\n')
+    systemMessage: assembled
   }));
 }
 

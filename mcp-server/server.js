@@ -16,6 +16,7 @@ import { registerLoggingTools } from './handlers/logging-handler.js';
 import { registerDebugTools } from './handlers/debug-handler.js';
 import { registerNotesTools } from './handlers/notes-handler.js';
 import { registerHUDTools } from './handlers/hud-handler.js';
+import { registerTracesTools } from './handlers/traces-handler.js';
 import { resolvePaths } from './lib/paths.js';
 
 const server = new McpServer({
@@ -33,6 +34,7 @@ registerLoggingTools(server, paths);
 registerDebugTools(server, paths);
 registerNotesTools(server, paths);
 registerHUDTools(server, paths);
+registerTracesTools(server, paths);
 
 // Start server
 const transport = new StdioServerTransport();

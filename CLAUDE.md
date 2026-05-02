@@ -91,6 +91,7 @@ All runtime data lives in `.jaewon/` at project root:
 | `jaewon_hud` | Get HUD display with pipeline status |
 | `jaewon_note_add` | Append note to `.jaewon/notes/` |
 | `jaewon_plan_save` | Save plan document to `docs/plans/` |
+| `jaewon_traces` | Read/list/summarize the file-edit trace feed (`.jaewon/traces/`) |
 
 ## LOD Hard Rules
 

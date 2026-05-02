@@ -21,7 +21,8 @@ const DEFAULTS = {
     blocked: '{base}/blocked',
     logs: '{base}/logs',
     debug_history: '{base}/debug-history',
-    context: '{base}/context'
+    context: '{base}/context',
+    traces: '{base}/traces'
   }
 };
 

@@ -13,6 +13,8 @@ import { existsSync, readFileSync } from 'fs';
 import { readStdin } from './lib/stdin.mjs';
 import { getSettings } from './lib/settings.mjs';
 import { readStatus, saveStatus } from './lib/state.mjs';
+import { traceHook } from './lib/hook-trace.mjs';
+import { captureTrace } from './lib/trace-capture.mjs';
 
 const LOC_LIMIT = 800;
 const MAX_RECENT_FILES = 20;
@@ -23,11 +25,26 @@ async function main() {
   try { data = JSON.parse(input); } catch { /* empty */ }
 
   const filePath = data.tool_input?.file_path || data.tool_input?.path || '';
+  const projectDir = data.cwd || process.cwd();
+
+  traceHook('file-tracker', projectDir, {
+    file: filePath || null,
+    tool: data.tool_name || null
+  });
+
   if (!filePath) {
     process.exit(0);
   }
 
-  const projectDir = data.cwd || process.cwd();
+  // Append to .jaewon/traces/YYYY-MM-DD.jsonl for the learning-loop synthesizer.
+  // Distinct from hook-trace (which proves the hook fired); this records the
+  // domain event itself so /jaewon-evolve can read it later.
+  captureTrace(projectDir, {
+    tool: data.tool_name || 'Write|Edit',
+    file: filePath,
+    session_id: data.session_id || null
+  });
+
   const settings = getSettings(projectDir);
   const status = readStatus(settings, projectDir);
   const warnings = [];

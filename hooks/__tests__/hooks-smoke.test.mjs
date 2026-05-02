@@ -49,6 +49,11 @@ const CASES = [
     name: 'test-tracker',
     script: 'test-tracker.mjs',
     payload: { tool_input: { command: 'npm test' } }
+  },
+  {
+    name: 'file-tracker',
+    script: 'file-tracker.mjs',
+    payload: { tool_name: 'Write', tool_input: { file_path: '/tmp/some-file.js' }, session_id: 'sess-test' }
   }
 ];
 
