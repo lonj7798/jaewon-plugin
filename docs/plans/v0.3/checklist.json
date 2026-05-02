@@ -261,30 +261,36 @@
         {
           "id": "p5-t1",
           "title": "Skill /jaewon-scout (scout-report.md via retrieval-agent)",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p1-t3"
           ],
           "parallel": true,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:31:58.556Z",
+          "notes": "skills/scout/SKILL.md — one-shot orientation via retrieval-agent -> docs/wiki/scout-report.md"
         },
         {
           "id": "p5-t2",
           "title": "Author context/core-beliefs.md and context/vision.md",
-          "status": "pending",
+          "status": "done",
           "depends_on": [],
           "parallel": true,
-          "tdd_stage": "n/a"
+          "tdd_stage": "n/a",
+          "completed_at": "2026-05-02T18:31:58.556Z",
+          "notes": "context/core-beliefs.md (8 beliefs with decision filters) + context/vision.md (north-star + acceptance criteria)"
         },
         {
           "id": "p5-t3",
           "title": "Skill /jaewon-distinguished-engineer — drift checks against core-beliefs.md",
-          "status": "pending",
+          "status": "done",
           "depends_on": [
             "p5-t2"
           ],
           "parallel": false,
-          "tdd_stage": "red"
+          "tdd_stage": "red",
+          "completed_at": "2026-05-02T18:31:58.556Z",
+          "notes": "skills/distinguished-engineer/SKILL.md — per-belief walk with PASS/WARN/BLOCK verdict"
         }
       ]
     }

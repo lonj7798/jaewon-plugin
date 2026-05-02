@@ -67,6 +67,8 @@ All runtime data lives in `.jaewon/` at project root:
 | `jaewon-pr` | "prepare PR", "ship it", "draft PR" | Codex fresh-eyes pass + readiness checklist + auto-drafted PR body |
 | `reflect` | "reflect", "session reflection", "what did we learn" | Manual session-end reflection -> `.jaewon/reflections/YYYY-MM-DD.md` |
 | `evolve` | "evolve", "apply lessons", "synthesize reflections" | Manual loop: synthesizer -> proposals.json -> per-item approval -> apply + commit |
+| `scout` | "scout", "onboard", "get oriented" | One-shot orientation: retrieval-agent -> docs/wiki/scout-report.md (directory map / where-to-start / conventions / gotchas) |
+| `distinguished-engineer` | "drift check", "beliefs check", "before merge" | Walks a proposal against `context/core-beliefs.md`; PASS / WARN / BLOCK verdict |
 
 ## Agents
 
