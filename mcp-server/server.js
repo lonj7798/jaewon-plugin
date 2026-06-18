@@ -14,7 +14,6 @@ import { registerStatusTools } from './handlers/status-handler.js';
 import { registerChecklistTools } from './handlers/checklist-handler.js';
 import { registerLoggingTools } from './handlers/logging-handler.js';
 import { registerDebugTools } from './handlers/debug-handler.js';
-import { registerNotesTools } from './handlers/notes-handler.js';
 import { registerHUDTools } from './handlers/hud-handler.js';
 import { registerTracesTools } from './handlers/traces-handler.js';
 import { resolvePaths } from './lib/paths.js';
@@ -32,7 +31,6 @@ registerStatusTools(server, paths);
 registerChecklistTools(server, paths);
 registerLoggingTools(server, paths);
 registerDebugTools(server, paths);
-registerNotesTools(server, paths);
 registerHUDTools(server, paths);
 registerTracesTools(server, paths);
 

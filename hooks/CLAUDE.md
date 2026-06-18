@@ -24,7 +24,7 @@ Cost of the dispatcher pattern: ~2× Node cold-start per invocation (~150 ms). E
 - A native git hook (`.git/hooks/post-commit`, etc.) installed by `setup-jaewon`, or
 - Another reliably-dispatched event (`PostToolUse:Write|Edit`, `Stop`, `SubagentStop`).
 
-**Existing risk:** `test-tracker.mjs` is currently registered on `PostToolUse:Bash` and may be silently dead. Phase 0.3 (observability) verifies empirically.
+**Resolved:** `test-tracker.mjs` (formerly `PostToolUse:Bash`) was confirmed dead — the smoke test showed the script itself works, but `.jaewon/hook-trace.jsonl` never recorded a production firing — and was removed in the v0.3 prune (2026-06-17). Test-run / commit recordkeeping is left to the native `post-commit-scribe` git hook.
 
 ## Verifiable-side-effect contract
 
@@ -58,7 +58,6 @@ Every enforcement hook **must** produce an observable side-effect that another c
 | `SessionEnd` | `*` | `session-end.mjs` | Persist final state, write insights |
 | `PreToolUse` | `Bash` | `pre-tool-enforcer.mjs` | LOD enforcement on Bash calls (single entry — see dedup rule) |
 | `PostToolUse` | `Write\|Edit` | `file-tracker.mjs` | Logs file edits |
-| `PostToolUse` | `Bash` | `test-tracker.mjs` | **At risk** — PostToolUse:Bash may not dispatch (verify in Phase 0.3) |
 | `TaskCompleted` | `""` | `task-sync.mjs` | Sync TaskCompleted events to state |
 
 ## Adding a new hook — checklist
