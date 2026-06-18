@@ -45,7 +45,16 @@ What kind of project is this?
    - If no git repo: `git init` + create `dev` branch
    - Add `.jaewon/` to `.gitignore` if not already there
 
-5. **Report**
+5. **Install pre-commit gate (review evidence + cleanup scan)**
+   - Copy `${CLAUDE_PLUGIN_ROOT}/skills/setup-jaewon/templates/pre-commit-config.json` to `.jaewon/pre-commit-config.json` if missing
+   - Tell the user the gate is ON by default. To disable: set `gate.enabled: false` in that config. To bypass once: `git commit --no-verify` and document the reason in the commit body.
+
+6. **Install native git post-commit scribe**
+   - If `.git/` exists: copy `${CLAUDE_PLUGIN_ROOT}/skills/setup-jaewon/templates/post-commit.sh` to `.git/hooks/post-commit` and `chmod +x` it
+   - If a non-jaewon `post-commit` already exists: rename to `.git/hooks/post-commit.local` and append a note in the new wrapper to call it (or instruct the user — never clobber)
+   - Why native: PostToolUse:Bash does not dispatch reliably in Claude Code; the scribe must run from git so manual `git commit` from the terminal also records.
+
+7. **Report**
    ```
    Setup complete!
    - .jaewon/ initialized with default settings
@@ -67,7 +76,11 @@ What kind of project is this?
 
 4. **Git setup** — same but don't `git init` (repo already exists). Just ensure `dev` branch.
 
-5. **Bootstrap Wiki** — THIS IS THE KEY DIFFERENCE
+5. **Install pre-commit gate** — same as Choice 1 step 5.
+
+6. **Install native git post-commit scribe** — same as Choice 1 step 6.
+
+7. **Bootstrap Wiki** — THIS IS THE KEY DIFFERENCE
 
    The project has existing code. The wiki needs to understand it. Spawn the wiki-maintainer agent to do a full initial ingest:
 

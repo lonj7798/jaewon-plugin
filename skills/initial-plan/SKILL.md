@@ -30,6 +30,18 @@ Initial Plan takes a user from idea to a detailed, versioned implementation plan
 
 <Steps>
 
+## Step 0: Decision-Doc Gate
+
+Before git setup or interview, verify `.jaewon/decisions/` has a fresh artifact (≤14 days) for the project / feature being planned. If none:
+
+> No decision doc found. Run `/jaewon-plugin:decision-feature` (or `decision-refactor` if this is a restructuring plan) first. The Socratic interview is for HOW, not WHAT — the WHAT must be committed before we plan.
+
+Then STOP. The interview is not a substitute for the decision harness; it operates downstream of it.
+
+If a doc exists, read it and quote scope + non-goals back to the user. The interview will fill in implementation detail, not redefine scope.
+
+For projects starting truly from scratch where there's no feature to scope yet, the decision artifact is the project goal itself — `decision-feature` with scope = "create the project skeleton + first vertical slice", non-goals = explicitly listed.
+
 ## Step 1: Git Setup
 Read `.jaewon/settings.json`. If `git.auto_manage` is true, ensure `dev` branch exists and is checked out. Otherwise skip.
 
@@ -74,7 +86,7 @@ Display: plan version, phase table (name, task count, TDD triplets), checklist s
 
 <Tool_Usage>
 - `AskUserQuestion` for interview questions (clickable UI with contextual options)
-- `Task(subagent_type="oh-my-claudecode:explore", model="haiku")` for codebase exploration
+- `Task(subagent_type="Explore", model="haiku")` for codebase exploration
 - `Task(subagent_type="jaewon-plugin:planner|architect|critic", model="opus")` for consensus loop (sequential)
 - `Write` for plan documents, transcripts, specs
 - `Read` for `.jaewon/settings.json` and `.jaewon/status.json`

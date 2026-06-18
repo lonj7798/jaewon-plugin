@@ -75,9 +75,7 @@ Setup: `/jaewon-plugin:hud-setup`
 | debug | `/jaewon-plugin:debug` | Isolated trace-then-fix debugging with debug-history |
 | add-feature | `/jaewon-plugin:add-feature` | Feature branch + lighter planning + implement |
 | hook-designer | `/jaewon-plugin:hook-designer` | Design, test, and install hooks iteratively |
-| insights | `/jaewon-plugin:insights` | Usage analytics HTML report |
 | status | `/jaewon-plugin:status` | Show full pipeline HUD on demand |
-| hud-setup | `/jaewon-plugin:hud-setup` | Configure HUD statusline |
 | smart-compact | `/jaewon-plugin:smart-compact` | Focus-aware compaction (up to 3 clarifying rounds) |
 | skill-creator | `/jaewon-plugin:skill-creator` | Create, test, evaluate, and iterate skills with benchmarks |
 | agent-development | `/jaewon-plugin:agent-development` | Create agents with frontmatter, examples, and validation |
@@ -95,7 +93,6 @@ Skills use progressive disclosure — core workflow loads on trigger (~100-150 L
 | implementer | sonnet | green | Make tests pass — TDD GREEN + REFACTOR |
 | tracer | opus | magenta | Investigate bugs (read-only, competing hypotheses) |
 | fixer | opus | green | Apply minimal fixes with regression tests |
-| reviewer | opus | cyan | Severity-rated code review (read-only) |
 | git-manager | sonnet | cyan | Branch/merge/tag with policy enforcement |
 | wiki-maintainer | sonnet | magenta | Auto-maintain project wiki (Karpathy pattern) |
 
@@ -108,7 +105,6 @@ Skills use progressive disclosure — core workflow loads on trigger (~100-150 L
 | subagent-tracker | SubagentStop | Update checklist + HUD progress + wiki task hint |
 | stop-guard | Stop | Block stop if tasks remain in checklist |
 | teammate-dispatcher | TeammateIdle | Assign next unblocked task to idle teammate |
-| test-tracker | PostToolUse:Bash | Track test results + git commits + wiki commit hint |
 | file-tracker | PostToolUse:Write\|Edit | Track file changes + LOD 800 LOC warning |
 | pre-tool-enforcer | PreToolUse:Bash | Block dangerous commands, warn on main branch |
 | pre-compact | PreCompact | Save handoff + read smart-compact focus + wiki lint hint |
@@ -127,8 +123,6 @@ Skills use progressive disclosure — core workflow loads on trigger (~100-150 L
 | jaewon_logging_toggle | Enable/disable per-module debug logging |
 | jaewon_debug_history | Search/add to bug knowledge base |
 | jaewon_hud | Get formatted HUD display |
-| jaewon_note_add | Append note to `.jaewon/notes/` |
-| jaewon_plan_save | Save plan document to `docs/plans/` |
 
 ## Project Wiki (Karpathy LLM Wiki)
 

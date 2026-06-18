@@ -32,6 +32,7 @@ Execute a plan's tasks through TDD workflow. The main session is the intent laye
 - Wait for sub-batch completion before starting the next sub-batch
 - Self-driving hooks (Stop/SubagentStop/TeammateIdle) assist the execution loop
 - Re-read `checklist.json` before each batch to avoid stale state
+- **Live progress feedback (issue #9)**: emit a one-line dispatch/completion update for every state transition AND keep `.jaewon/progress.md` current — the user must never have to ask "are you still working?"
 </Execution_Policy>
 
 <Steps>
@@ -72,11 +73,27 @@ Main session creates a focused brief -- the ONLY input spawned agents receive:
 - If blocked: write to `.jaewon/blocked/{task-id}.md` with attempts, errors, alternatives
 ```
 
+### 3a.1: Emit Dispatch Line (Live Progress)
+
+Before each agent spawn, print a one-line update so the user sees motion in real time. Format:
+
+```
+▸ {task-id} dispatched ({stage})    e.g.,  ▸ p1-t3 dispatched (RED)
+```
+
+After the spawn returns (regardless of outcome), print:
+
+```
+✓ {task-id} done (commit {short-hash})    or    ✗ {task-id} blocked: {one-line reason}
+```
+
+These two lines are the user's primary live signal between batches. Do NOT batch them; emit on each state change. The `.jaewon/progress.md` file (refreshed by the SubagentStop hook) provides the at-a-glance table for tail/IDE consumers.
+
 ### 3b: Spawn Test-Generator (RED)
 
 Teammate preferred, Agent fallback:
 - **Teammate**: `SendMessage(teammate_id, brief + "You are test-generator. Write failing tests. Verify they FAIL.")`
-- **Agent**: `Task(subagent_type="oh-my-claudecode:executor", model="sonnet", prompt="You are test-generator. {brief}. Return: test file path, test count, all-failing confirmation.")`
+- **Agent**: `Task(subagent_type="general-purpose", model="sonnet", prompt="You are test-generator. {brief}. Return: test file path, test count, all-failing confirmation.")`
 
 Wait for completion. Validate: test file path, test count, all-failing confirmation. If blocked: record and skip.
 
@@ -84,7 +101,7 @@ Wait for completion. Validate: test file path, test count, all-failing confirmat
 
 Augment brief with test-generator output (test file path, test names, notes).
 - **Teammate**: `SendMessage(teammate_id, augmented_brief + "You are implementer. Make tests pass. Refactor. Commit.")`
-- **Agent**: `Task(subagent_type="oh-my-claudecode:executor", model="sonnet", prompt="You are implementer. {augmented_brief}. Return: status, files changed, commit hash.")`
+- **Agent**: `Task(subagent_type="general-purpose", model="sonnet", prompt="You are implementer. {augmented_brief}. Return: status, files changed, commit hash.")`
 
 Wait for completion. Validate: status, files changed, commit hash (if done). If blocked: record.
 
@@ -137,7 +154,7 @@ Hook assistance: SubagentStop logs results and nudges next dispatch; TeammateIdl
 - `Write` for task briefs, `checklist.json` updates, blocked task files, dispute files
 - `Bash` for git operations (log commits, verify branches)
 - `SendMessage` for teammate dispatch (preferred); `TeamCreate`/`TeamDelete` for pools
-- `Task(subagent_type="oh-my-claudecode:executor", model="sonnet")` for agent fallback
+- `Task(subagent_type="general-purpose", model="sonnet")` for agent fallback
 - `jaewon_status_update`/`jaewon_status` for `.jaewon/status.json`
 - `jaewon_checklist_update` for checklist items (when MCP tools available)
 - Do NOT write code in the main session -- always spawn agents
@@ -194,6 +211,8 @@ Why bad: TDD requires RED before GREEN. Implementer needs tests from test-genera
 - [ ] Loop continued until all done or all remaining blocked
 - [ ] Completion summary displayed; `.jaewon/status.json` updated
 - [ ] No stale `in_progress` or missed `pending` tasks remain
+- [ ] Dispatch/completion lines emitted on every state transition (no silent gaps)
+- [ ] `.jaewon/progress.md` is up to date (auto-written by SubagentStop hook)
 </Final_Checklist>
 
 Task: {{ARGUMENTS}}

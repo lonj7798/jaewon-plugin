@@ -30,6 +30,18 @@ Add-feature extends an existing codebase with a new feature. It is lighter than 
 
 <Steps>
 
+## Step 0: Decision-Doc Gate
+
+Before any branch / plan / code, verify a fresh decision artifact exists in `.jaewon/decisions/` for this feature. List recent files (last 14 days). If none matches the feature description:
+
+> No fresh decision doc found. Run `/jaewon-plugin:decision-feature` first — it captures scope, non-goals, success criteria, and blast radius. Iterating on a vague prompt produces a polished version of the wrong feature.
+
+Then STOP. Do not proceed until a decision doc exists.
+
+If a doc exists but is older than 14 days or its scope doesn't match the current ask, prompt the user to refresh it (re-run `decision-feature` with the same slug).
+
+Read the decision doc and quote scope + non-goals back to the user before continuing — confirms you understood the boundary.
+
 ## Step 1: Git — Create Feature Branch
 
 1. Read `.jaewon/settings.json` — check `git.auto_manage`
@@ -45,7 +57,7 @@ Add-feature extends an existing codebase with a new feature. It is lighter than 
 
 1. Read existing architecture from `.jaewon/architecture/` if it exists
 2. Read existing plan docs from `docs/plans/` for context
-3. Use `Task(subagent_type="oh-my-claudecode:explore", model="haiku")` to:
+3. Use `Task(subagent_type="Explore", model="haiku")` to:
    - Map existing modules and their responsibilities
    - Find integration points where the new feature connects
    - Identify existing patterns the feature should follow (naming, error handling, imports)
@@ -72,7 +84,7 @@ Skip the interview if the user provided a detailed specification or said "just b
 
 ## Step 4: Lightweight Plan
 
-1. Spawn `Task(subagent_type="oh-my-claudecode:planner", model="opus")` with:
+1. Spawn `Task(subagent_type="jaewon-plugin:planner", model="opus")` with:
    - Feature description and scope summary from Step 2
    - Existing architecture context (file tree, module boundaries)
    - Interview answers (if collected)
@@ -127,9 +139,9 @@ Execute the same pipeline as the `implement` skill:
 </Steps>
 
 <Tool_Usage>
-- `Task(subagent_type="oh-my-claudecode:explore", model="haiku")` for scope analysis
-- `Task(subagent_type="oh-my-claudecode:planner", model="opus")` for lightweight planning
-- `Task(subagent_type="oh-my-claudecode:executor", model="sonnet")` for test-generator and implementer
+- `Task(subagent_type="Explore", model="haiku")` for scope analysis
+- `Task(subagent_type="jaewon-plugin:planner", model="opus")` for lightweight planning
+- `Task(subagent_type="general-purpose", model="sonnet")` for test-generator and implementer
 - `SendMessage` for teammate dispatch (preferred over Task when teams available)
 - `Read` for existing architecture, plan docs, settings
 - `Write` for plan docs, checklist, architecture updates

@@ -5,7 +5,7 @@ Personal Claude Code plugin providing a self-driving pipeline, TDD-first workflo
 ## What This Plugin Does
 
 - **Lifecycle manager**: hooks into SessionStart/End, Stop, SubagentStop to persist state and resume work automatically
-- **Coding enhancer**: TDD-first agent chain (test-generator -> implementer -> reviewer)
+- **Coding enhancer**: TDD-first agent chain (test-generator -> implementer -> reviewer-structural -> reviewer-deep)
 - **Workflow automation**: self-driving pipeline that dispatches idle teammates and guards premature stops
 
 ## Project Wiki
@@ -30,6 +30,7 @@ All runtime data lives in `.jaewon/` at project root:
 .jaewon/
   settings.json    # configurable paths + preferences
   status.json      # current phase, task list, agent assignments
+  progress.md      # live markdown table of task progress (auto-refreshed)
   session-log.md   # session history
   context/         # handoff.md for zero-ramp-up sessions
   blocked/         # failed task reports
@@ -51,14 +52,21 @@ All runtime data lives in `.jaewon/` at project root:
 | `add-feature` | "add feature", "extend" | plan -> implement -> review cycle |
 | `hook-designer` | "design hook", "new hook" | Scaffold hook script + register in hooks.json |
 | `error-healing` | "error", "fix error", "heal" | Fast-path error fix with verification |
-| `insights` | "insights", "what did we learn" | Generate usage analytics HTML dashboard |
 | `status` | "status", "where are we" | Print `.jaewon/status.json` summary |
-| `hud-setup` | "setup hud", "statusline" | Configure Claude Code statusline |
 | `smart-compact` | "smart compact" | Focus-aware context compaction |
 | `setup-jaewon` | "setup jaewon" | Initialize plugin for a project |
 | `skill-creator` | "create skill", "new skill" | Create, test, and optimize skills |
 | `agent-development` | "create agent", "new agent" | Guide for building agent definitions |
 | `retrieve` | "retrieve", "lookup", "have we seen" | Spawn retrieval-agent to fetch info across lanes without bloating main context |
+| `review` | "review", "before commit", "audit changes" | Two-pass review (structural -> deep) that writes evidence to `.jaewon/review-evidence.jsonl` (gates `git commit`) |
+| `decision-feature` | "plan a feature", "decision feature" | Hard-gated decision harness: scope / non-goals / success criteria / blast radius before any plan |
+| `decision-bugfix` | "decision bugfix", "fix decision" | Hard-gated decision harness: symptom / root cause / fix scope / regression-prevention test |
+| `decision-refactor` | "decision refactor", "refactor scope" | Hard-gated decision harness: scope / non-goals / behavior-preservation contract / rollback plan |
+| `jaewon-pr` | "prepare PR", "ship it", "draft PR" | Codex fresh-eyes pass + readiness checklist + auto-drafted PR body |
+| `reflect` | "reflect", "session reflection", "what did we learn" | Manual session-end reflection -> `.jaewon/reflections/YYYY-MM-DD.md` |
+| `evolve` | "evolve", "apply lessons", "synthesize reflections" | Manual loop: synthesizer -> proposals.json -> per-item approval -> apply + commit |
+| `scout` | "scout", "onboard", "get oriented" | One-shot orientation: retrieval-agent -> docs/wiki/scout-report.md (directory map / where-to-start / conventions / gotchas) |
+| `distinguished-engineer` | "drift check", "beliefs check", "before merge" | Walks a proposal against `context/core-beliefs.md`; PASS / WARN / BLOCK verdict |
 
 ## Agents
 
@@ -71,10 +79,12 @@ All runtime data lives in `.jaewon/` at project root:
 | `implementer` | Makes tests pass with minimal viable code |
 | `tracer` | Traces call chains to locate bug root cause |
 | `fixer` | Applies targeted fix after tracer confirms root cause |
-| `reviewer` | Code review against codebase patterns |
 | `wiki-maintainer` | Maintains project wiki pages and index |
 | `git-manager` | Stages, commits, and pushes with correct message format |
 | `retrieval-agent` | Read-only retrieval lane: distills answers from project, .jaewon, wiki, git, web |
+| `reviewer-structural` | First-pass review: simplicity, surgical changes, silent errors, security, races (read-only) |
+| `reviewer-deep` | Second-pass review: logic, state, data integrity, observability, performance, test gaps (read-only) |
+| `synthesizer` | Reads reflections + traces, emits `.jaewon/evolve/proposals.json` with targeted patches (≤5 per run) |
 
 ## MCP Tools
 
@@ -88,8 +98,7 @@ All runtime data lives in `.jaewon/` at project root:
 | `jaewon_logging_toggle` | Enable/disable per-module debug logging |
 | `jaewon_debug_history` | Search/add to bug knowledge base |
 | `jaewon_hud` | Get HUD display with pipeline status |
-| `jaewon_note_add` | Append note to `.jaewon/notes/` |
-| `jaewon_plan_save` | Save plan document to `docs/plans/` |
+| `jaewon_traces` | Read/list/summarize the file-edit trace feed (`.jaewon/traces/`) |
 
 ## LOD Hard Rules
 
@@ -109,7 +118,7 @@ test-generator  ->  implementer  ->  reviewer
   tests              minimal code
 ```
 
-Invoked automatically by the `implement` and `add-feature` skills. Each stage gates the next: implementer does not run until test-generator produces a failing test; reviewer does not run until all tests pass.
+Invoked automatically by the `implement` and `add-feature` skills. Each stage gates the next: implementer does not run until test-generator produces a failing test; the reviewers (reviewer-structural, then reviewer-deep) do not run until all tests pass.
 
 ## Hook Scripts
 
@@ -126,7 +135,6 @@ hooks/
   session-end.mjs          # Persist final state and write insights
   pre-tool-enforcer.mjs    # Enforce LOD rules on Bash tool calls
   file-tracker.mjs         # Log file writes/edits to state
-  test-tracker.mjs         # Detect test runs and update checklist
   task-sync.mjs            # Sync TaskCompleted events to state
   lib/                     # Shared utilities (state I/O, logging)
 ```

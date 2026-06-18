@@ -1,0 +1,26 @@
+{
+  "_doc": "Configuration for the jaewon-plugin pre-commit gate (in pre-tool-enforcer.mjs). Edit and re-run setup-jaewon to install changes per project.",
+  "gate": {
+    "enabled": true,
+    "_enabled_doc": "When false, the review-evidence + cleanup-scan gate is OFF. Destructive-pattern blocks (rm -rf /, force push, drop table) still apply.",
+    "requireBothPasses": true,
+    "_requireBothPasses_doc": "When true, both reviewer-structural AND reviewer-deep evidence must be fresh. When false, either pass alone unblocks the commit.",
+    "maxAgeMinutes": 30,
+    "_maxAgeMinutes_doc": "How long review evidence stays valid after recording."
+  },
+  "patterns": {
+    "_doc": "Cleanup patterns scanned in staged files. Block on match. Per-language; falls back to 'other' for unrecognized extensions.",
+    "javascript": ["\\bHACK\\b", "\\bFIXME\\b", "\\bdebugger\\b", "console\\.log\\(", "// TODO\\b"],
+    "typescript": ["\\bHACK\\b", "\\bFIXME\\b", "\\bdebugger\\b", "console\\.log\\(", "// TODO\\b"],
+    "python": ["\\bHACK\\b", "\\bFIXME\\b", "\\bbreakpoint\\(", "pdb\\.set_trace", "# TODO\\b"],
+    "other": ["\\bHACK\\b", "\\bFIXME\\b"]
+  },
+  "complexity": {
+    "_doc": "Per-file LOC limits. Function-level limits handled by the reviewer agents.",
+    "maxFileLOC": 800,
+    "maxFunctionLOC": 80
+  },
+  "exemptPaths": ["docs/", ".jaewon/", "node_modules/", ".git/", "dist/", "build/"],
+  "exemptExts": [".md", ".json", ".yaml", ".yml", ".txt", ".lock", ".lockb", ".log"],
+  "_bypass_doc": "Human bypass: `git commit --no-verify`. Document the reason in the commit body when you do."
+}

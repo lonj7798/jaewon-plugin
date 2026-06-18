@@ -9,13 +9,29 @@
  *   Phase 5: Injects handoff context, checks git branch, computes HUD.
  *   Side effects: Creates directories and files
  */
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import { readStdin } from './lib/stdin.mjs';
 import { getSettings, DEFAULTS } from './lib/settings.mjs';
 import { readStatus, DEFAULT_STATUS } from './lib/state.mjs';
 import { computeHUD, formatCompactHUD } from './lib/hud.mjs';
 import { getCurrentBranch } from './lib/session-helpers.mjs';
+import { traceHook } from './lib/hook-trace.mjs';
+
+// ~2000 tokens at ~4 chars/token. The session-start context block displaces
+// every other piece of context the LLM could be using; budget keeps it honest.
+const CONTEXT_BUDGET_CHARS = 8000;
+// When handoff is over-budget, keep this many leading chars and a tail note.
+// Head-only because the most relevant state is at the top of a handoff
+// (current state, completed/pending tasks).
+const HANDOFF_HEAD_CHARS = 5000;
+
+function truncateHandoff(handoff) {
+  if (handoff.length <= HANDOFF_HEAD_CHARS) return handoff;
+  const head = handoff.slice(0, HANDOFF_HEAD_CHARS);
+  const droppedChars = handoff.length - HANDOFF_HEAD_CHARS;
+  return head + `\n\n_[handoff truncated: ${droppedChars} more chars in .jaewon/context/handoff.md]_`;
+}
 
 async function main() {
   const input = await readStdin(3000);
@@ -87,7 +103,7 @@ async function main() {
     `Session: #${status.session.total_sessions}`
   ];
 
-  // 1. Inject handoff context if exists
+  // 1. Inject handoff context if exists (head-truncated to stay in budget)
   const handoffPath = join(projectDir, settings.paths.context, 'handoff.md');
   if (existsSync(handoffPath)) {
     try {
@@ -95,7 +111,7 @@ async function main() {
       if (handoff) {
         contextParts.push('');
         contextParts.push('## Previous Session Handoff');
-        contextParts.push(handoff);
+        contextParts.push(truncateHandoff(handoff));
       }
     } catch { /* ignore read errors */ }
   }
@@ -130,6 +146,29 @@ async function main() {
     } catch { /* ignore */ }
   }
 
+  // 3.5 Evolve backlog nudge — surface unsynthesized reflections so the
+  // learning loop doesn't quietly stall. Manual /jaewon-plugin:evolve only;
+  // no auto-fire (Guya regression history: auto-fire silently rotted for 6
+  // days when API key died).
+  try {
+    const reflectionsDir = join(baseDir, 'reflections');
+    const evolveLog = join(baseDir, 'evolve', 'log.md');
+    if (existsSync(reflectionsDir)) {
+      const reflectionFiles = readdirSync(reflectionsDir).filter(f => /^\d{4}-\d{2}-\d{2}\.md$/.test(f));
+      let lastEvolveTs = 0;
+      if (existsSync(evolveLog)) {
+        try { lastEvolveTs = statSync(evolveLog).mtimeMs; } catch { /* ignore */ }
+      }
+      const newer = reflectionFiles.filter(f => {
+        try { return statSync(join(reflectionsDir, f)).mtimeMs > lastEvolveTs; } catch { return false; }
+      });
+      if (newer.length >= 3) {
+        contextParts.push('');
+        contextParts.push(`EVOLVE BACKLOG: ${newer.length} reflections since last /jaewon-plugin:evolve. Run it to synthesize lessons into proposals.`);
+      }
+    }
+  } catch { /* nudge is non-critical */ }
+
   // 4. Compute and inject HUD
   try {
     const hud = computeHUD(settings, projectDir);
@@ -145,8 +184,23 @@ async function main() {
     writeFileSync(statusPath, JSON.stringify(status, null, 2), 'utf-8');
   } catch { /* ignore */ }
 
+  // Final budget enforcement: if everything together still blows past the
+  // budget (huge handoff + warnings + long HUD), hard-cap with a tail note.
+  let assembled = contextParts.join('\n');
+  if (assembled.length > CONTEXT_BUDGET_CHARS) {
+    const overflow = assembled.length - CONTEXT_BUDGET_CHARS;
+    assembled = assembled.slice(0, CONTEXT_BUDGET_CHARS) +
+      `\n\n_[context capped at ${CONTEXT_BUDGET_CHARS} chars; ${overflow} more dropped to protect main-session budget]_`;
+  }
+
+  traceHook('session-start', projectDir, {
+    chars: assembled.length,
+    over_budget: assembled.length > CONTEXT_BUDGET_CHARS,
+    has_handoff: existsSync(handoffPath)
+  });
+
   console.log(JSON.stringify({
-    systemMessage: contextParts.join('\n')
+    systemMessage: assembled
   }));
 }
 
