@@ -57,7 +57,7 @@ Read the decision doc and quote scope + non-goals back to the user before contin
 
 1. Read existing architecture from `.jaewon/architecture/` if it exists
 2. Read existing plan docs from `docs/plans/` for context
-3. Use `Task(subagent_type="oh-my-claudecode:explore", model="haiku")` to:
+3. Use `Task(subagent_type="Explore", model="haiku")` to:
    - Map existing modules and their responsibilities
    - Find integration points where the new feature connects
    - Identify existing patterns the feature should follow (naming, error handling, imports)
@@ -84,7 +84,7 @@ Skip the interview if the user provided a detailed specification or said "just b
 
 ## Step 4: Lightweight Plan
 
-1. Spawn `Task(subagent_type="oh-my-claudecode:planner", model="opus")` with:
+1. Spawn `Task(subagent_type="jaewon-plugin:planner", model="opus")` with:
    - Feature description and scope summary from Step 2
    - Existing architecture context (file tree, module boundaries)
    - Interview answers (if collected)
@@ -139,9 +139,9 @@ Execute the same pipeline as the `implement` skill:
 </Steps>
 
 <Tool_Usage>
-- `Task(subagent_type="oh-my-claudecode:explore", model="haiku")` for scope analysis
-- `Task(subagent_type="oh-my-claudecode:planner", model="opus")` for lightweight planning
-- `Task(subagent_type="oh-my-claudecode:executor", model="sonnet")` for test-generator and implementer
+- `Task(subagent_type="Explore", model="haiku")` for scope analysis
+- `Task(subagent_type="jaewon-plugin:planner", model="opus")` for lightweight planning
+- `Task(subagent_type="general-purpose", model="sonnet")` for test-generator and implementer
 - `SendMessage` for teammate dispatch (preferred over Task when teams available)
 - `Read` for existing architecture, plan docs, settings
 - `Write` for plan docs, checklist, architecture updates

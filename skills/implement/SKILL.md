@@ -93,7 +93,7 @@ These two lines are the user's primary live signal between batches. Do NOT batch
 
 Teammate preferred, Agent fallback:
 - **Teammate**: `SendMessage(teammate_id, brief + "You are test-generator. Write failing tests. Verify they FAIL.")`
-- **Agent**: `Task(subagent_type="oh-my-claudecode:executor", model="sonnet", prompt="You are test-generator. {brief}. Return: test file path, test count, all-failing confirmation.")`
+- **Agent**: `Task(subagent_type="general-purpose", model="sonnet", prompt="You are test-generator. {brief}. Return: test file path, test count, all-failing confirmation.")`
 
 Wait for completion. Validate: test file path, test count, all-failing confirmation. If blocked: record and skip.
 
@@ -101,7 +101,7 @@ Wait for completion. Validate: test file path, test count, all-failing confirmat
 
 Augment brief with test-generator output (test file path, test names, notes).
 - **Teammate**: `SendMessage(teammate_id, augmented_brief + "You are implementer. Make tests pass. Refactor. Commit.")`
-- **Agent**: `Task(subagent_type="oh-my-claudecode:executor", model="sonnet", prompt="You are implementer. {augmented_brief}. Return: status, files changed, commit hash.")`
+- **Agent**: `Task(subagent_type="general-purpose", model="sonnet", prompt="You are implementer. {augmented_brief}. Return: status, files changed, commit hash.")`
 
 Wait for completion. Validate: status, files changed, commit hash (if done). If blocked: record.
 
@@ -154,7 +154,7 @@ Hook assistance: SubagentStop logs results and nudges next dispatch; TeammateIdl
 - `Write` for task briefs, `checklist.json` updates, blocked task files, dispute files
 - `Bash` for git operations (log commits, verify branches)
 - `SendMessage` for teammate dispatch (preferred); `TeamCreate`/`TeamDelete` for pools
-- `Task(subagent_type="oh-my-claudecode:executor", model="sonnet")` for agent fallback
+- `Task(subagent_type="general-purpose", model="sonnet")` for agent fallback
 - `jaewon_status_update`/`jaewon_status` for `.jaewon/status.json`
 - `jaewon_checklist_update` for checklist items (when MCP tools available)
 - Do NOT write code in the main session -- always spawn agents

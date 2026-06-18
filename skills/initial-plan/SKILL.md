@@ -86,7 +86,7 @@ Display: plan version, phase table (name, task count, TDD triplets), checklist s
 
 <Tool_Usage>
 - `AskUserQuestion` for interview questions (clickable UI with contextual options)
-- `Task(subagent_type="oh-my-claudecode:explore", model="haiku")` for codebase exploration
+- `Task(subagent_type="Explore", model="haiku")` for codebase exploration
 - `Task(subagent_type="jaewon-plugin:planner|architect|critic", model="opus")` for consensus loop (sequential)
 - `Write` for plan documents, transcripts, specs
 - `Read` for `.jaewon/settings.json` and `.jaewon/status.json`
